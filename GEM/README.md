@@ -11,7 +11,7 @@ Ubuntu 20.04
   * (optional) conda config --set auto_activate_base false
 
 ## 2 Install & activate environment:  
-  download [drl.tar.gz](https://1drv.ms/u/s!Aj44OX1lWGicc35GmcDsOfg8SDE?e=up9Vjf)
+  download [gem.tar.gz]([https://1drv.ms/u/s!Aj44OX1lWGicc35GmcDsOfg8SDE?e=up9Vjf](https://drive.google.com/file/d/1bL69C_r0lvmh1lniaH9keAAPIeAAZmMe/view?usp=sharing))
 
   * tar -zxzf atari_env.tar.gz 
   * mv drl ~/conda/envs/
