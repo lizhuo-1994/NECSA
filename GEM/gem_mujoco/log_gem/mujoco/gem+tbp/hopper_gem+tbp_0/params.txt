@@ -1,0 +1,1 @@
+{"env_type": "mujoco", "env_id": "Hopper-v3", "agent": "GEM", "layer_norm": false, "evaluation": true, "seed": 0, "comment": "hopper_gem+tbp_0", "gamma": 0.99, "num_timesteps": 400001, "max_steps": 1000, "delay_step": 0}

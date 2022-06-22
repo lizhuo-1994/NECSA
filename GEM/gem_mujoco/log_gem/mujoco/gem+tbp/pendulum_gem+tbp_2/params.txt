@@ -1,0 +1,1 @@
+{"env_type": "mujoco", "env_id": "InvertedPendulum-v2", "agent": "GEM", "layer_norm": false, "evaluation": true, "seed": 2, "comment": "pendulum_gem+tbp_2", "gamma": 0.99, "num_timesteps": 100001, "max_steps": 1000, "delay_step": 0}
