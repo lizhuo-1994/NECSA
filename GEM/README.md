@@ -14,7 +14,7 @@ Ubuntu 20.04
   download [gem.tar.gz](https://drive.google.com/file/d/1bL69C_r0lvmh1lniaH9keAAPIeAAZmMe/view?usp=sharing)
 
   * tar -zxzf gem.tar.gz 
-  * mv drl ~/conda/envs/
+  * mv gem ~/conda/envs/
   * conda activate gem
 
 ## 3 Install Mujoco:
