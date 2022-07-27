@@ -11,10 +11,11 @@ import json
 
 class ScoreInspector:
     
-    def __init__(self, order, grid_num, state_dim, state_min, state_max, action_dim, action_min, action_max, mode):
+    def __init__(self, order, grid_num, raw_state_dim, state_dim, state_min, state_max, action_dim, action_min, action_max, mode, reduction):
 
         self.order = order
         self.grid_num = grid_num
+        self.raw_state_dim = raw_state_dim
         self.state_dim = state_dim
         self.state_min = state_min
         self.state_max = state_max
@@ -26,6 +27,7 @@ class ScoreInspector:
         self.basic_states_scores = None
         self.basic_states_proceeds = None
         self.mode = mode
+        self.reduction = reduction
         
         self.score_avg = None
         self.pcaModel = None
@@ -42,12 +44,26 @@ class ScoreInspector:
     
     def setup(self):
 
-        if self.mode == 'state':
-            self.min_state = np.array([self.state_min for i in range(self.state_dim)])
-            self.max_state = np.array([self.state_max for i in range(self.state_dim)])
-        elif self.mode == 'state_action':
-            self.min_state = np.array([self.state_min for i in range(self.state_dim)] + [self.action_min for i in range(self.action_dim)])
-            self.max_state = np.array([self.state_max for i in range(self.state_dim)] + [self.action_max for i in range(self.action_dim)])
+        if self.reduction:
+            
+            if self.mode == 'state':
+                self.project_matrix = np.random.uniform(0,0.1,(self.raw_state_dim,self.state_dim))
+                self.min_state = np.dot(np.array([self.state_min for i in range(self.raw_state_dim)]), self.project_matrix)
+                self.max_state = np.dot(np.array([self.state_max for i in range(self.raw_state_dim)]), self.project_matrix)
+            elif self.mode == 'state_action':
+                self.project_matrix = np.random.uniform(0,0.1,(self.raw_state_dim + self.action_dim,self.state_dim))
+                self.min_state = np.dot(np.array([self.state_min for i in range(self.raw_state_dim)]+ [self.action_min for i in range(self.action_dim)]), self.project_matrix)
+                self.max_state = np.dot(np.array([self.state_max for i in range(self.raw_state_dim)]+ [self.action_max for i in range(self.action_dim)]), self.project_matrix)
+
+        else:
+            if self.mode == 'state':
+                self.min_state = np.array([self.state_min for i in range(self.state_dim)])
+                self.max_state = np.array([self.state_max for i in range(self.state_dim)])
+            elif self.mode == 'state_action':
+                self.min_state = np.array([self.state_min for i in range(self.state_dim)] + [self.action_min for i in range(self.action_dim)])
+                self.max_state = np.array([self.state_max for i in range(self.state_dim)] + [self.action_max for i in range(self.action_dim)])
+
+
 
         self.min_avg_proceed = 0
         self.max_avg_proceed = 100
@@ -165,8 +181,21 @@ class Abstracter:
         self.inspector = None
 
         
+
+
+    def dim_reduction(self, state):
+        small_state = np.dot(state, self.inspector.project_matrix)
+        print(self.inspector.project_matrix)
+        print(small_state)
+        return  small_state
+
+
         
     def append(self, con_state, reward, done):
+
+        if self.inspector.reduction:
+            con_state = self.dim_reduction(con_state)
+
         self.con_states.append(con_state)
         self.con_reward.append(reward)
         self.con_dones.append(done)
@@ -181,6 +210,9 @@ class Abstracter:
         self.con_dones  = []
     
     def handle_pattern(self,con_states,rewards,step, total_step):
+
+        if self.inspector.reduction:
+            con_states = self.dim_reduction(con_states)
         
         abs_pattern = self.inspector.discretize_states(con_states)
         

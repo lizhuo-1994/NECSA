@@ -45,12 +45,12 @@ class Trainer:
         torch.manual_seed(seed)
         np.random.seed(seed)
 
-        state_dim = env.observation_space.shape[0]
+        raw_state_dim = env.observation_space.shape[0]
         action_dim = env.action_space.shape[0]
         max_action = float(env.action_space.high[0])
 
         kwargs = {
-            "state_dim": state_dim,
+            "raw_state_dim": raw_state_dim,
             "action_dim": action_dim,
             "max_action": max_action,
             "discount": self.c["discount"],
@@ -78,11 +78,20 @@ class Trainer:
             kwargs["grid_num"] = self.c["grid_num"]
             kwargs["decay"] = self.c["decay"]
             kwargs["repair_scope"] = self.c["repair_scope"]
+
+            kwargs["raw_state_dim"] = raw_state_dim
+            kwargs["reduction"] = self.c["reduction"]
+            if kwargs["reduction"]:
+                kwargs["state_dim"] = self.c["state_dim"]
+            else:
+                kwargs["state_dim"] = raw_state_dim
+
             kwargs["state_min"] = self.c["state_min"]
             kwargs["state_max"] = self.c["state_max"]
             kwargs["action_min"] = np.min(env.action_space.low)
             kwargs["action_max"] = np.min(env.action_space.high)
             kwargs["mode"] = self.c["mode"]
+            
             policy = RCS(**kwargs)
 
             ####### configure the state abstraction #############
@@ -92,14 +101,14 @@ class Trainer:
         if load_model != "":
             policy.load(f"{exp_dir}/models/{load_model}")
 
-        mem = MemBuffer(state_dim, action_dim,
+        mem = MemBuffer(raw_state_dim, action_dim,
                         capacity=self.c["max_timesteps"],
                         k=self.c["k"],
                         mem_dim=self.c["mem_dim"],
                         device=kwargs["device"])
         
         if method == 'RCS':
-            replay_buffer = RcsEpisodicReplayBuffer(state_dim, action_dim, mem,
+            replay_buffer = RcsEpisodicReplayBuffer(raw_state_dim, action_dim, mem,
                                              device=device,
                                              prioritized=self.c["prioritized"],
                                              beta=self.c["beta"],
@@ -107,7 +116,7 @@ class Trainer:
                                              expl_noise=self.c["expl_noise"])
         
         else:
-            replay_buffer = EpisodicReplayBuffer(state_dim, action_dim, mem,
+            replay_buffer = EpisodicReplayBuffer(raw_state_dim, action_dim, mem,
                                              device=device,
                                              prioritized=self.c["prioritized"],
                                              beta=self.c["beta"],

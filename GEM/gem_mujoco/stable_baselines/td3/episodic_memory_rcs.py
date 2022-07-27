@@ -12,22 +12,28 @@ class EpisodicMemoryRCS(EpisodicMemory):
                  grid_num = 10, 
                  decay = 0.2, 
                  state_len = 8,
+                 raw_state_dim = 10,
+                 con_state_dom = 10,
                  state_min = -6, 
                  state_max = 6,
                  action_dim = 2,
                  action_min = -1,
                  action_max = -1, 
-                 mode = 'state_action'):
+                 mode = 'state_action',
+                 reduction = False):
         self.order = order
         self.grid_num = grid_num
         self.decay = decay
         self.state_len = state_len
+        self.raw_state_dim = raw_state_dim
+        self.con_state_dim = con_state_dim
         self.state_min = state_min
         self.state_max = state_max
         self.action_dim = action_dim
         self.action_min = action_min
         self.action_max = action_max
         self.mode = mode
+        self.reduction = reduction
         super(EpisodicMemoryRCS, self).__init__(buffer_size, state_dim, action_shape, obs_space, q_func, repr_func,
                                                 obs_ph, action_ph, sess,
                                                 gamma, alpha,max_step)
@@ -37,7 +43,7 @@ class EpisodicMemoryRCS(EpisodicMemory):
 
         self.abstracter = Abstracter(self.order, self.decay)
         self.abstracter.inspector = ScoreInspector(
-            self.order, self.grid_num, self.state_len, self.state_min, self.state_max, self.action_dim, self.action_min, self.action_max, self.mode
+            self.order, self.grid_num, self.raw_state_dim, self.con_state_dim, self.state_min, self.state_max, self.action_dim, self.action_min, self.action_max, self.mode, self.reduction
             )
         
         # self.max_step = max_step

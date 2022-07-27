@@ -61,7 +61,7 @@ class TD3MemRCS(TD3MemBackProp):
                  random_exploration=0.0, verbose=0, tensorboard_log=None,
                  _init_setup_model=True, policy_kwargs=None, double_type="identical",
                  full_tensorboard_log=False, seed=None, n_cpu_tf_sess=None,
-                 order = 1, grid_num = 10, decay = 0.2, state_min = -6, state_max = -6, mode = 'state_action'):
+                 order = 1, grid_num = 10, decay = 0.2, con_state_dim = 10, state_min = -6, state_max = -6, mode = 'state_action', reduction = False):
         print("RCS Agent Here")
 
         # if iterative_q:
@@ -81,9 +81,11 @@ class TD3MemRCS(TD3MemBackProp):
         self.order = order
         self.grid_num = grid_num
         self.decay = decay
+        self.con_state_dim = con_state_dim
         self.state_min = state_min
         self.state_max = state_max
         self.mode = mode
+        self.reduction = reduction
         super(TD3MemRCS, self).__init__(policy, env, eval_env, gamma, learning_rate,
                                         buffer_size,
                                         learning_starts, train_freq, gradient_steps, batch_size,
@@ -277,6 +279,10 @@ class TD3MemRCS(TD3MemBackProp):
                 action_min = np.min(self.env.action_space.low)
                 action_max = np.max(self.env.action_space.high)
 
+
+                if not self.reduction:
+                    self.con_state_dim = state_len
+
                 self.memory = EpisodicMemoryRCS(self.buffer_size, state_dim=1,
                                                 obs_space=self.observation_space,
                                                 action_shape=self.action_space.shape,
@@ -288,6 +294,8 @@ class TD3MemRCS(TD3MemBackProp):
                                                 grid_num = self.grid_num, 
                                                 decay  = self.decay, 
                                                 state_len = state_len,
+                                                raw_state_dim = state_len,
+                                                con_state_dim = self.con_state_dim,
                                                 state_min = self.state_min, 
                                                 state_max = self.state_max, 
                                                 action_dim = action_dim,
