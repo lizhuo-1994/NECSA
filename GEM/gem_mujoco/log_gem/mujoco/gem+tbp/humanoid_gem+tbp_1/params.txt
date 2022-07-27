@@ -1,0 +1,1 @@
+{"env_type": "mujoco", "env_id": "Humanoid-v3", "agent": "GEM", "layer_norm": false, "evaluation": true, "seed": 1, "comment": "humanoid_gem+tbp_1", "gamma": 0.99, "num_timesteps": 500001, "max_steps": 1000, "delay_step": 0, "order": 1, "grid_num": 2, "decay": 0.5, "state_dim": 10, "state_min": -10, "state_max": 10, "mode": "state", "reduction": false}
