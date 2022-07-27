@@ -66,6 +66,8 @@ class Trainer:
             kwargs["policy_noise"] = self.c["policy_noise"] * max_action
             kwargs["noise_clip"] = self.c["noise_clip"] * max_action
             kwargs["policy_freq"] = self.c["policy_freq"]
+            del kwargs["raw_state_dim"]
+            kwargs["state_dim"] = raw_state_dim
             policy = TD3(**kwargs)
         elif method == "DDPG":
             policy = DDPG(**kwargs)
