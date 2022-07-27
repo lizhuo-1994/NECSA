@@ -8,6 +8,7 @@ from models.TD3 import TD3
 from models.DDPG import DDPG
 from models.EMAC import EMAC
 from models.RCS import RCS
+from models.RCS_TD3 import RCS_TD3
 
 from .utils import eval_policy, RewardLogger, estimate_true_q, determine_state_scales
 from .mem import MemBuffer
@@ -78,7 +79,7 @@ class Trainer:
             kwargs["state_dim"] = raw_state_dim
             kwargs["alpha"] = self.c["alpha"]
             policy = EMAC(**kwargs)
-        elif method == "RCS":
+        elif "RCS" in method:
             kwargs["alpha"] = self.c["alpha"]
             kwargs["order"] = self.c["order"]
             kwargs["grid_num"] = self.c["grid_num"]
@@ -98,7 +99,10 @@ class Trainer:
             kwargs["action_max"] = np.min(env.action_space.high)
             kwargs["mode"] = self.c["mode"]
             
-            policy = RCS(**kwargs)
+            if method == 'RCS':
+                policy = RCS(**kwargs)
+            elif method == 'RCS_TD3':
+                policy = RCS_TD3(**kwargs)
 
             ####### configure the state abstraction #############
         
@@ -113,7 +117,7 @@ class Trainer:
                         mem_dim=self.c["mem_dim"],
                         device=kwargs["device"])
         
-        if method == 'RCS':
+        if 'RCS' in method :
             replay_buffer = RcsEpisodicReplayBuffer(raw_state_dim, action_dim, mem,
                                              device=device,
                                              prioritized=self.c["prioritized"],

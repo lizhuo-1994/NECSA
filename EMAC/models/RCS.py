@@ -10,16 +10,16 @@ from .nn import Actor, Critic
 from .abstracter import Abstracter, ScoreInspector
 
 class RCS(object):
-    def __init__(self, state_dim, action_dim, max_action, discount=0.99,
+    def __init__(self, raw_state_dim, state_dim, action_dim, max_action, discount=0.99,
         alpha=0.0,tau=0.005, device="cuda", log_dir="tb", order=1, grid_num = 5, 
         decay=0.1, repair_scope=0.25, state_max = 10, state_min = -10, action_min=-1, action_max = 1,
-        mode = 'state_action'):
+        mode = 'state_action', reduction = False):
 
-        self.actor = Actor(state_dim, action_dim, max_action).to(device)
+        self.actor = Actor(raw_state_dim, action_dim, max_action).to(device)
         self.actor_target = copy.deepcopy(self.actor)
         self.actor_optimizer = torch.optim.Adam(self.actor.parameters())
 
-        self.critic = Critic(state_dim, action_dim).to(device)
+        self.critic = Critic(raw_state_dim, action_dim).to(device)
         self.critic_target = copy.deepcopy(self.critic)
         self.critic_optimizer = torch.optim.Adam(self.critic.parameters())
         self.alpha = alpha
@@ -33,7 +33,7 @@ class RCS(object):
 
         self.abstracter = Abstracter(order, decay, repair_scope)
         self.abstracter.inspector = ScoreInspector(
-            order, grid_num, state_dim, state_min, state_max, action_dim, action_min, action_max, mode
+            order, grid_num, raw_state_dim, state_dim, state_min, state_max, action_dim, action_min, action_max, mode, reduction
             )
 
 
