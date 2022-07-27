@@ -70,8 +70,12 @@ class Trainer:
             kwargs["state_dim"] = raw_state_dim
             policy = TD3(**kwargs)
         elif method == "DDPG":
+            del kwargs["raw_state_dim"]
+            kwargs["state_dim"] = raw_state_dim
             policy = DDPG(**kwargs)
         elif method == "EMAC":
+            del kwargs["raw_state_dim"]
+            kwargs["state_dim"] = raw_state_dim
             kwargs["alpha"] = self.c["alpha"]
             policy = EMAC(**kwargs)
         elif method == "RCS":
