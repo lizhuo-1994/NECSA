@@ -93,8 +93,9 @@ def run(env_id, seed, layer_norm, evaluation, agent, delay_step, gamma=0.99, **k
                           n_cpu_tf_sess=10,
                           alpha=0.5, beta=-1, iterative_q=-1,
                           num_q=4, gradient_steps=200, max_step=kwargs['max_steps'], reward_scale=1., nb_eval_steps=10,
-                          order = kwargs['order'], grid_num = kwargs['grid_num'], decay = kwargs['decay'], state_dim=kwargs['state_max']
-                          con_state_dim = kwargs['state_min'], state_max = kwargs['state_max'], mode = kwargs['mode'],
+                          order = kwargs['order'], grid_num = kwargs['grid_num'], decay = kwargs['decay'], 
+                          con_state_dim = kwargs['state_dim'], state_min = kwargs['state_min'],
+                          state_max = kwargs['state_max'], mode = kwargs['mode'],
                           reduction = kwargs['reduction'], policy_kwargs={"layers": [400, 300]})
     else:
         raise NotImplementedError

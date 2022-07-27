@@ -43,7 +43,6 @@ class ScoreInspector:
 
     
     def setup(self):
-
         if self.reduction:
             
             if self.mode == 'state':
@@ -54,7 +53,6 @@ class ScoreInspector:
                 self.project_matrix = np.random.uniform(0,0.1,(self.raw_state_dim + self.action_dim,self.state_dim))
                 self.min_state = np.dot(np.array([self.state_min for i in range(self.raw_state_dim)]+ [self.action_min for i in range(self.action_dim)]), self.project_matrix)
                 self.max_state = np.dot(np.array([self.state_max for i in range(self.raw_state_dim)]+ [self.action_max for i in range(self.action_dim)]), self.project_matrix)
-
         else:
             if self.mode == 'state':
                 self.min_state = np.array([self.state_min for i in range(self.state_dim)])
@@ -170,7 +168,7 @@ class ScoreInspector:
 
 class Abstracter:
     
-    def __init__(self, order, decay, repair_scope):
+    def __init__(self, order, decay, repair_scope = 0.1):
         self.con_states = []
         self.con_values = []
         self.con_reward = []
@@ -185,8 +183,6 @@ class Abstracter:
 
     def dim_reduction(self, state):
         small_state = np.dot(state, self.inspector.project_matrix)
-        print(self.inspector.project_matrix)
-        print(small_state)
         return  small_state
 
 
@@ -209,7 +205,7 @@ class Abstracter:
         self.con_reward = []
         self.con_dones  = []
     
-    def handle_pattern(self,con_states,rewards,step, total_step):
+    def handle_pattern(self,con_states,rewards):
 
         if self.inspector.reduction:
             con_states = self.dim_reduction(con_states)
@@ -231,7 +227,7 @@ class Abstracter:
 
 
 
-    def reward_shaping(self, state_list, reward_list, step, total_step):
+    def reward_shaping(self, state_list, reward_list):
         
         shaping_reward_list = copy.deepcopy(reward_list)
 
@@ -240,7 +236,7 @@ class Abstracter:
             target_states = state_list[i:i+self.order]
             target_rewards = reward_list[i:i+self.order]
 
-            shaped_reward = self.handle_pattern(target_states, target_rewards, step, total_step)
+            shaped_reward = self.handle_pattern(target_states, target_rewards)
             shaping_reward_list[i] = shaped_reward
         
         shaping_reward_list = np.array(shaping_reward_list)

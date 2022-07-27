@@ -294,14 +294,14 @@ class TD3MemRCS(TD3MemBackProp):
                                                 grid_num = self.grid_num, 
                                                 decay  = self.decay, 
                                                 state_len = state_len,
-                                                raw_state_dim = state_len,
                                                 con_state_dim = self.con_state_dim,
                                                 state_min = self.state_min, 
                                                 state_max = self.state_max, 
                                                 action_dim = action_dim,
                                                 action_min = action_min,
                                                 action_max = action_max,
-                                                mode = self.mode)
+                                                mode = self.mode,
+                                                reduction = self.reduction)
 
     def _train_step(self, step, writer, learning_rate, update_policy, update_q):
         # Sample a batch from the replay buffer

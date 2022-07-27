@@ -12,8 +12,7 @@ class EpisodicMemoryRCS(EpisodicMemory):
                  grid_num = 10, 
                  decay = 0.2, 
                  state_len = 8,
-                 raw_state_dim = 10,
-                 con_state_dom = 10,
+                 con_state_dim = 10,
                  state_min = -6, 
                  state_max = 6,
                  action_dim = 2,
@@ -25,7 +24,7 @@ class EpisodicMemoryRCS(EpisodicMemory):
         self.grid_num = grid_num
         self.decay = decay
         self.state_len = state_len
-        self.raw_state_dim = raw_state_dim
+        self.raw_state_dim = state_len
         self.con_state_dim = con_state_dim
         self.state_min = state_min
         self.state_max = state_max
