@@ -47,11 +47,11 @@ class ScoreInspector:
         if self.reduction:
             
             if self.mode == 'state':
-                self.project_matrix = np.random.uniform(0,0.1,(self.raw_state_dim,self.state_dim))
+                self.project_matrix = np.random.randn(self.raw_state_dim,self.state_dim)
                 self.min_state = np.dot(np.array([self.state_min for i in range(self.raw_state_dim)]), self.project_matrix)
                 self.max_state = np.dot(np.array([self.state_max for i in range(self.raw_state_dim)]), self.project_matrix)
             elif self.mode == 'state_action':
-                self.project_matrix = np.random.uniform(0,0.1,(self.raw_state_dim + self.action_dim,self.state_dim))
+                self.project_matrix = np.random.randn(self.raw_state_dim + self.action_dim,self.state_dim)
                 self.min_state = np.dot(np.array([self.state_min for i in range(self.raw_state_dim)]+ [self.action_min for i in range(self.action_dim)]), self.project_matrix)
                 self.max_state = np.dot(np.array([self.state_max for i in range(self.raw_state_dim)]+ [self.action_max for i in range(self.action_dim)]), self.project_matrix)
 
