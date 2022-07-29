@@ -7,6 +7,7 @@ from torch.utils.tensorboard import SummaryWriter
 from .nn import Actor
 from .nn import DoubleCritic as Critic
 
+from .abstracter import Abstracter, ScoreInspector
 
 class RCS_TD3(object):
     def __init__(

@@ -102,6 +102,7 @@ class Trainer:
             if method == 'RCS':
                 policy = RCS(**kwargs)
             elif method == 'RCS_TD3':
+                del kwargs["alpha"]
                 policy = RCS_TD3(**kwargs)
 
             ####### configure the state abstraction #############
