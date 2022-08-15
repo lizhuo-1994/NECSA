@@ -246,6 +246,10 @@ class RcsEpisodicReplayBuffer(object):
             self.state_action_list.append(list(state) + list(action))
         self.reward_list.append(reward)
         
+
+        if step % 10000 == 0:
+            policy.abstracter.inspector.save('Walker2d-v3-m')
+
         if done_env:
             self.reward_list = policy.abstracter.reward_shaping(np.array(self.state_action_list), np.array(self.reward_list), step, total_step)
             self.ep_reward = self.ep_reward + self.reward_list.tolist()

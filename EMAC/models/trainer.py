@@ -7,7 +7,7 @@ from models.utils import EpisodicReplayBuffer, RcsEpisodicReplayBuffer
 from models.TD3 import TD3
 from models.DDPG import DDPG
 from models.EMAC import EMAC
-from models.RCS import RCS
+from models.RCS_DDPG import RCS_DDPG
 from models.RCS_TD3 import RCS_TD3
 
 from .utils import eval_policy, RewardLogger, estimate_true_q, determine_state_scales
@@ -99,7 +99,7 @@ class Trainer:
             kwargs["action_max"] = np.min(env.action_space.high)
             kwargs["mode"] = self.c["mode"]
             
-            if method == 'RCS':
+            if method == 'RCS_DDPG':
                 policy = RCS(**kwargs)
             elif method == 'RCS_TD3':
                 del kwargs["alpha"]

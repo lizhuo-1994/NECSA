@@ -75,6 +75,10 @@ class ScoreInspector:
         #self.pcaModel = joblib.load(config.PCA_MODEL_PATH)
         self.grid = Grid(self.min_state, self.max_state, self.grid_num)   
 
+    def save(self, env_name):
+
+        with open(env_name + '.json', 'w') as f:
+            json.dump(self.states_info, f)
 
     def discretize_states(self, con_states):
         abs_states = self.grid.state_abstract(con_states)
