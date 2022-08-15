@@ -224,7 +224,7 @@ class Trainer:
         policy = self.c["policy"]
         exp = self.c["exp_name"]
         seed = self.c["seed"]
-        if policy == 'RCS':
+        if 'RCS' in policy:
             order = self.c['order']
             fn = f"{env}/{policy}_{order}/{exp}_{seed}.json"
         else:
