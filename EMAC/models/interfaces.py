@@ -96,7 +96,6 @@ class Grid(AbstractModel):
         for i in range(dims):
             abs_states = abs_states + tmp[:,i]*pow(self.k, i)
 #         abs_states = np.expand_dims(abs_states,axis=-1)
-            
         abs_states = [str(item) for item in abs_states]
         return abs_states
     

@@ -100,7 +100,8 @@ class Trainer:
             kwargs["mode"] = self.c["mode"]
             
             if method == 'RCS_DDPG':
-                policy = RCS(**kwargs)
+                del kwargs["alpha"]
+                policy = RCS_DDPG(**kwargs)
             elif method == 'RCS_TD3':
                 del kwargs["alpha"]
                 policy = RCS_TD3(**kwargs)

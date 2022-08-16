@@ -9,12 +9,13 @@ from .nn import Actor, Critic
 
 from .abstracter import Abstracter, ScoreInspector
 
+ 
+
 class RCS_DDPG(object):
     def __init__(self, raw_state_dim, state_dim, action_dim, max_action, discount=0.99,
-        alpha=0.0,tau=0.005, device="cuda", log_dir="tb", order=1, grid_num = 5, 
+            tau=0.005, device="cuda", log_dir="tb", order=1, grid_num = 5, 
         decay=0.1, repair_scope=0.25, state_max = 10, state_min = -10, action_min=-1, action_max = 1,
         mode = 'state_action', reduction = False):
-
         self.actor = Actor(raw_state_dim, action_dim, max_action).to(device)
         self.actor_target = copy.deepcopy(self.actor)
         self.actor_optimizer = torch.optim.Adam(self.actor.parameters())
@@ -22,7 +23,7 @@ class RCS_DDPG(object):
         self.critic = Critic(raw_state_dim, action_dim).to(device)
         self.critic_target = copy.deepcopy(self.critic)
         self.critic_optimizer = torch.optim.Adam(self.critic.parameters())
-        self.alpha = alpha
+
         self.discount = discount
         self.tau = tau
         self.device = device
@@ -36,29 +37,23 @@ class RCS_DDPG(object):
             order, grid_num, raw_state_dim, state_dim, state_min, state_max, action_dim, action_min, action_max, mode, reduction
             )
 
-
     def select_action(self, state):
         state = torch.FloatTensor(state.reshape(1, -1)).to(self.device)
         return self.actor(state).cpu().data.numpy().flatten()
 
     def train(self, replay_buffer, batch_size=100):
-        # Sample replay buffer 
-        state, action, next_state, reward, not_done = replay_buffer.sample(batch_size, self.step)
+        # Sample replay buffer
+        state, action, next_state, reward, not_done = replay_buffer.sample(batch_size)
 
         # Compute the target Q value
         target_Q = self.critic_target(next_state, self.actor_target(next_state))
         target_Q = reward + (not_done * self.discount * target_Q).detach()
 
-        mem_q = replay_buffer.mem.retrieve_cuda(state, action)
-        mem_q = torch.from_numpy(mem_q).float().to(self.device)
-
         # Get current Q estimate
         current_Q = self.critic(state, action)
 
         # Compute critic loss
-        q_loss = F.mse_loss(current_Q, target_Q)
-        q_loss_mem = F.mse_loss(current_Q, mem_q)
-        critic_loss = (1 - self.alpha) * q_loss + self.alpha * q_loss_mem
+        critic_loss = F.mse_loss(current_Q, target_Q)
 
         # Optimize the critic
         self.critic_optimizer.zero_grad()
@@ -67,7 +62,7 @@ class RCS_DDPG(object):
 
         # Compute actor loss
         actor_loss = -self.critic(state, self.actor(state)).mean()
-
+        
         # Optimize the actor 
         self.actor_optimizer.zero_grad()
         actor_loss.backward()
@@ -84,14 +79,8 @@ class RCS_DDPG(object):
         if self.step % 250 == 0:
             q = np.mean(current_Q.detach().cpu().numpy())
             self.tb_logger.add_scalar("algo/q", q, self.step)
-            q_mem = np.mean(mem_q.cpu().numpy())
-            self.tb_logger.add_scalar("algo/q_mem", q_mem, self.step)
-            q_loss = q_loss.detach().cpu().item()
-            self.tb_logger.add_scalar("algo/q_cur_loss", q_loss, self.step)
-            q_mem_loss = q_loss_mem.detach().cpu().item()
-            self.tb_logger.add_scalar("algo/q_mem_loss", q_mem_loss, self.step)
-            q_total_loss = q_loss + q_mem_loss
-            self.tb_logger.add_scalar("algo/critic_loss", q_total_loss, self.step)
+            q_loss = critic_loss.detach().cpu().item()
+            self.tb_logger.add_scalar("algo/q_loss", q_loss, self.step)
             pi_loss = actor_loss.detach().cpu().item()
             self.tb_logger.add_scalar("algo/pi_loss", pi_loss, self.step)
         self.step += 1
