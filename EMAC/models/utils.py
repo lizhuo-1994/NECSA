@@ -454,10 +454,6 @@ class RcsReplayBuffer(object):
 
 
     def sample(self, batch_size, step=None):
-        if step is None or (step < self.start_timesteps or (not self.prioritized)):
-            p = None
-        else:
-            p = self.p[:self.size]
 
         ind = np.random.choice(self.size, batch_size, p=p)
         return (
