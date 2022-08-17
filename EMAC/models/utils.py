@@ -455,7 +455,7 @@ class RcsReplayBuffer(object):
 
     def sample(self, batch_size, step=None):
 
-        ind = np.random.choice(self.size, batch_size, p=p)
+        ind = np.random.choice(self.size, batch_size)
         return (
                 torch.FloatTensor(self.state[ind]).to(self.device),
                 torch.FloatTensor(self.action[ind]).to(self.device),
