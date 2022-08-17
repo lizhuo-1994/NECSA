@@ -3,7 +3,7 @@ import numpy as np
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
-from models.utils import EpisodicReplayBuffer, RcsEpisodicReplayBuffer
+from models.utils import EpisodicReplayBuffer, RcsEpisodicReplayBuffer, RcsReplayBuffer
 from models.TD3 import TD3
 from models.DDPG import DDPG
 from models.EMAC import EMAC
@@ -120,7 +120,7 @@ class Trainer:
                         device=kwargs["device"])
         
         if 'RCS' in method :
-            replay_buffer = RcsEpisodicReplayBuffer(raw_state_dim, action_dim, mem,
+            replay_buffer = RcsReplayBuffer(raw_state_dim, action_dim,
                                              device=device,
                                              prioritized=self.c["prioritized"],
                                              beta=self.c["beta"],
@@ -190,11 +190,7 @@ class Trainer:
                 episode_num += 1
                 
 
-            # Logging buffer size
-            if t % 250 == 0:
-                tb_logger.add_scalar("trainer/buffer_size", replay_buffer.size, t)
-                tb_logger.add_scalar("memory/size", replay_buffer.mem.size, t)
-
+            
             # Evaluate episode
             if t % eval_freq == 0:
                 print("Step ", t)
