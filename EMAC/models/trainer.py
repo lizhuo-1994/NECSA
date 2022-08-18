@@ -120,7 +120,7 @@ class Trainer:
                         device=kwargs["device"])
         
         if 'RCS' in method :
-            replay_buffer = RcsReplayBuffer(raw_state_dim, action_dim,
+            replay_buffer = RcsEpisodicReplayBuffer(raw_state_dim, action_dim,mem,
                                              device=device,
                                              prioritized=self.c["prioritized"],
                                              beta=self.c["beta"],
