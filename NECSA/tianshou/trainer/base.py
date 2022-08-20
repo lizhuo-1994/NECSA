@@ -212,6 +212,8 @@ class BaseTrainer(ABC):
         self.stop_fn_flag = False
         self.iter_num = 0
 
+
+
     def reset(self) -> None:
         """Initialize or reset the instance to yield a new iterator from zero."""
         self.is_run = False

@@ -76,6 +76,10 @@ class Collector(object):
         # avoid creating attribute outside __init__
         self.reset(False)
 
+
+        ########### test results ################
+        self.policy_eval_results = []
+
     def _assign_buffer(self, buffer: Optional[ReplayBuffer]) -> None:
         """Check if the buffer matches the constraint."""
         if buffer is None:
@@ -385,6 +389,8 @@ class Collector(object):
             rews, lens, idxs = np.array([]), np.array([], int), np.array([], int)
             rew_mean = rew_std = len_mean = len_std = 0
 
+        self.policy_eval_results.append((rew_mean, rew_std))
+
         return {
             "n/ep": episode_count,
             "n/st": step_count,
@@ -625,6 +631,8 @@ class AsyncCollector(Collector):
         else:
             rews, lens, idxs = np.array([]), np.array([], int), np.array([], int)
             rew_mean = rew_std = len_mean = len_std = 0
+
+        self.policy_eval_results.append([rew_mean, rew_std])
 
         return {
             "n/ep": episode_count,

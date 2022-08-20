@@ -98,11 +98,14 @@ class NECSA_Collector(object):
             NECSA_DICT['reduction']
             )
         
-        ##########
+        ########## NECSA ###########
         self.state_list = []
         self.state_action_list = []
         self.reward_list = []
         self.ep_reward = []
+
+        ########## result ###########
+        self.ep_reward_recorder = []
 
     def _assign_buffer(self, buffer: Optional[ReplayBuffer]) -> None:
         """Check if the buffer matches the constraint."""
@@ -416,7 +419,6 @@ class NECSA_Collector(object):
                 break
 
             ################### save results ########################
-
         # generate statistics
         self.collect_step += step_count
         self.collect_episode += episode_count

@@ -2,7 +2,7 @@
 
 import argparse
 import datetime
-import os
+import os,json
 import pprint
 
 import numpy as np
@@ -173,7 +173,7 @@ def test_td3(args=get_args()):
 
     # log
     now = datetime.datetime.now().strftime("%y%m%d-%H%M%S")
-    args.algo_name = "td3"
+    args.algo_name = "necsa_td3"
     log_name = os.path.join(args.task, args.algo_name, str(args.seed), now)
     log_path = os.path.join(args.logdir, log_name)
 
@@ -220,6 +220,15 @@ def test_td3(args=get_args()):
     test_collector.reset()
     result = test_collector.collect(n_episode=args.test_num, render=args.render)
     print(f'Final reward: {result["rews"].mean()}, length: {result["lens"].mean()}')
+
+    reward_save_path = 'results/' + args.task + '/' + args.algo_name.upper()
+    if 'necsa' in args.algo_name:
+        reward_save_path = reward_save_path + '_' + str(args.order)
+    now = datetime.datetime.now().strftime("%y%m%d-%H%M%S")
+    reward_save_path = reward_save_path + '/' + now + '.json'
+    print(reward_save_path)
+    with open(reward_save_path, 'w') as f:
+        json.dump(test_collector.policy_eval_results, f)
 
 
 if __name__ == "__main__":
