@@ -132,7 +132,7 @@ def test_td3(args=get_args()):
     if args.training_num > 1:
         buffer = VectorReplayBuffer(args.buffer_size, len(train_envs))
     else:
-        buffer = ReplayBuffer(args.buffer_size)
+        buffer = PrioritizedReplayBuffer(args.buffer_size)
     train_collector = Collector(policy, train_envs, buffer, exploration_noise=True)
     test_collector = Collector(policy, test_envs)
     train_collector.collect(n_step=args.start_timesteps, random=True)

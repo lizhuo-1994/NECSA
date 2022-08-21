@@ -632,7 +632,7 @@ class AsyncCollector(Collector):
             rews, lens, idxs = np.array([]), np.array([], int), np.array([], int)
             rew_mean = rew_std = len_mean = len_std = 0
 
-        self.policy_eval_results.append([rew_mean, rew_std])
+        self.policy_eval_results.append([0,rew_std,rew_mean])
 
         return {
             "n/ep": episode_count,
