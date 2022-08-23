@@ -35,7 +35,7 @@ def get_args():
     parser.add_argument("--update-actor-freq", type=int, default=2)
     parser.add_argument("--start-timesteps", type=int, default=25000)
     parser.add_argument("--epoch", type=int, default=200)
-    parser.add_argument("--step-per-epoch", type=int, default=5000)
+    parser.add_argument("--step-per-epoch", type=int, default=1000)
     parser.add_argument("--step-per-collect", type=int, default=1)
     parser.add_argument("--update-per-step", type=int, default=1)
     parser.add_argument("--n-step", type=int, default=1)
