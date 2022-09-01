@@ -64,7 +64,7 @@ class ScoreInspector:
                 self.max_state = np.array([self.state_max for i in range(self.raw_state_dim)] + [self.action_max for i in range(self.action_dim)])
 
         self.min_avg_proceed = 0
-        self.max_avg_proceed = 100
+        self.max_avg_proceed = 1000
 
         #self.scores = scores
         self.score_avg = 0
@@ -81,6 +81,7 @@ class ScoreInspector:
             json.dump(self.states_info, f)
 
     def discretize_states(self, con_states):
+        
         abs_states = self.grid.state_abstract(con_states)
         return abs_states
     
@@ -189,14 +190,13 @@ class Abstracter:
         
     def append(self, con_state, reward, done):
 
-        if self.inspector.reduction:
-            con_state = self.dim_reduction(con_state)
-
         self.con_states.append(con_state)
         self.con_reward.append(reward)
         self.con_dones.append(done)
 
         if done:
+            if self.inspector.reduction:
+                self.con_states = self.dim_reduction(self.con_states)
             self.inspector.start_pattern_abstract(self.con_states, self.con_reward)
             self.clear()
     
@@ -207,9 +207,6 @@ class Abstracter:
     
     def handle_pattern(self,con_states,rewards):
 
-        if self.inspector.reduction:
-            con_states = self.dim_reduction(con_states)
-        
         abs_pattern = self.inspector.discretize_states(con_states)
         
         if len(abs_pattern) != self.order:
@@ -228,6 +225,9 @@ class Abstracter:
 
 
     def reward_shaping(self, state_list, reward_list):
+
+        if self.inspector.reduction:
+            state_list = self.dim_reduction(state_list)
         
         shaping_reward_list = copy.deepcopy(reward_list)
 
