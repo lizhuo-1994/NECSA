@@ -7,9 +7,7 @@ from models.utils import EpisodicReplayBuffer, RcsEpisodicReplayBuffer, RcsRepla
 from models.TD3 import TD3
 from models.DDPG import DDPG
 from models.EMAC import EMAC
-from models.RCS_DDPG import RCS_DDPG
-from models.RCS_TD3 import RCS_TD3
-from models.RCS_EMAC import RCS_EMAC
+
 
 from .utils import eval_policy, RewardLogger, estimate_true_q, determine_state_scales
 from .mem import MemBuffer
