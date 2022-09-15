@@ -1,4 +1,4 @@
-python ddpg.py --task Humanoid-v3 --epoch 1000
+python ddpg.py --task Humanoid-v3 --epoch 1000 
 pkill -f ddpg
 python ddpg.py --task Humanoid-v3 --epoch 1000
 pkill -f ddpg
