@@ -41,6 +41,7 @@ class ScoreInspector:
         
         self.setup()
 
+
     
     def setup(self):
 
@@ -81,7 +82,6 @@ class ScoreInspector:
             json.dump(self.states_info, f)
 
     def discretize_states(self, con_states):
-        
         abs_states = self.grid.state_abstract(con_states)
         return abs_states
     
@@ -104,15 +104,15 @@ class ScoreInspector:
             self.states_info.update(new_states_info)
             self.score_avg = np.mean([self.states_info[abs_state]['score'] for abs_state in self.states_info.keys()])
             
-            '''
-            print('############################################################')
-            #print('Abstract states :\t', self.states_info)
-            print('Abstract states number :\t', len(self.states_info.keys()))
-            print('Average states score :\t', self.score_avg)
-            print('Queue size :\t',self.s_token.qsize())
-            print('min and max proceed', self.min_avg_proceed, self.max_avg_proceed)
-            print('############################################################')
-            '''
+            
+            # print('############################################################')
+            # #print('Abstract states :\t', self.states_info)
+            # print('Abstract states number :\t', len(self.states_info.keys()))
+            # print('Average states score :\t', self.score_avg)
+            # print('Queue size :\t',self.s_token.qsize())
+            # print('min and max proceed', self.min_avg_proceed, self.max_avg_proceed)
+            # print('############################################################')
+            
             
     
     def start_pattern_abstract(self, con_states, rewards):

@@ -380,11 +380,14 @@ class NECSA_Collector(object):
                 self.data, buffer_ids=ready_env_ids
             )
 
+            
+
             if done:
-                if self.collect_step < 990000:
+                if self.collect_step < 950000:
                     self.buffer.rew[ep_idx[0]: ep_idx[0] + ep_len[0]] = self.ep_reward
                 else:
-                    print(ep_idx[0], ep_len[0], len(self.ep_reward), self.ep_reward)
+                    pass
+                    #print(ep_idx[0], ep_len[0], len(self.ep_reward), self.ep_reward)
 
 
             # collect statistics

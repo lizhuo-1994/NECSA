@@ -1,13 +1,13 @@
-python ddpg.py --task Ant-v3 --epoch 1000
-pkill -f ddpg
-python ddpg.py --task Ant-v3 --epoch 1000
-pkill -f ddpg
-python ddpg.py --task Ant-v3 --epoch 1000
-pkill -f ddpg
-python ddpg.py --task Ant-v3 --epoch 1000
-pkill -f ddpg
-python ddpg.py --task Ant-v3 --epoch 1000
-pkill -f ddpg
+# python ddpg.py --task Ant-v3 --epoch 1000
+# pkill -f ddpg
+# python ddpg.py --task Ant-v3 --epoch 1000
+# pkill -f ddpg
+# python ddpg.py --task Ant-v3 --epoch 1000
+# pkill -f ddpg
+# python ddpg.py --task Ant-v3 --epoch 1000
+# pkill -f ddpg
+# python ddpg.py --task Ant-v3 --epoch 1000
+# pkill -f ddpg
 
 
 
