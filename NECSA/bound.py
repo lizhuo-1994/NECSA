@@ -2,7 +2,7 @@ import gym
 import mujoco_py
 
 
-env = gym.make('Hopper-v3')
+env = gym.make('Reacher-v2')
 
 env.reset()
 
