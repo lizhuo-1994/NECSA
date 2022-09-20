@@ -9,10 +9,11 @@ class VanillaEnv():
         self.args = args
         if args.sticky:
             # frameskip is deterministic
+            print("env:Deterministic-v0")
             self.env = gym.make(args.env + 'Deterministic-v0').env
         else:
+            print("env:Deterministic-v4")
             self.env = gym.make(args.env + 'Deterministic-v4').env
-
         self.action_space = self.env.action_space
         self.observation_space = gym.spaces.Box(low=0.0, high=1.0, shape=(84, 84, args.frames), dtype=np.float32)
         assert type(self.action_space) is gym.spaces.discrete.Discrete

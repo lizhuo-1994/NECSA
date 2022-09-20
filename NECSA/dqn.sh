@@ -1,0 +1,1 @@
+python necsa_dqn.py --task Alien --epoch 400 --order 1 --grid_num 5 --decay 2.0 --mode state

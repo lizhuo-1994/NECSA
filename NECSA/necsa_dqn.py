@@ -3,20 +3,20 @@ import datetime
 import os
 import pprint
 
-import json
 import numpy as np
 import torch
-from atari_network import DQN
-from atari_wrapper import make_atari_env
+import json
+from examples.atari.atari_network import DQN
+from examples.atari.atari_wrapper import make_atari_env
 from torch.utils.tensorboard import SummaryWriter
 
-from tianshou.data import Collector, VectorReplayBuffer
+from tianshou.data import NECSA_Collector_ATARI, Collector, VectorReplayBuffer
 from tianshou.policy import DQNPolicy
 from tianshou.policy.modelbased.icm import ICMPolicy
 from tianshou.trainer import offpolicy_trainer
 from tianshou.utils import TensorboardLogger, WandbLogger
 from tianshou.utils.net.discrete import IntrinsicCuriosityModule
-
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -36,8 +36,8 @@ def get_args():
     parser.add_argument("--step-per-collect", type=int, default=10)
     parser.add_argument("--update-per-step", type=float, default=0.1)
     parser.add_argument("--batch-size", type=int, default=32)
-    parser.add_argument("--training-num", type=int, default=10)
-    parser.add_argument("--test-num", type=int, default=10)
+    parser.add_argument("--training-num", type=int, default=1)
+    parser.add_argument("--test-num", type=int, default=1)
     parser.add_argument("--logdir", type=str, default="log")
     parser.add_argument("--render", type=float, default=0.)
     parser.add_argument(
@@ -78,6 +78,16 @@ def get_args():
         default=0.2,
         help="weight for the forward model loss in ICM"
     )
+
+    parser.add_argument("--order", type=int, default=3)                  # Directory for storing all experimental data
+    parser.add_argument("--grid_num", type=int, default=5)              # Directory for storing all experimental data
+    parser.add_argument("--decay", type=float, default=0.2 )            # Directory for storing all experimental data
+    parser.add_argument("--repair_scope", type=float, default=1.0 )     # 
+    parser.add_argument("--state_dim", type=int, default=64 ) 
+    parser.add_argument("--state_min", type=float, default=-10 )        # 
+    parser.add_argument("--state_max", type=float, default=10 )         # state_max, state_min
+    parser.add_argument("--mode", type=str, default='state_action', choices=['state', 'state_action'] )   # 
+    parser.add_argument("--reduction", action="store_true")   # 
     return parser.parse_args()
 
 
@@ -140,8 +150,25 @@ def test_dqn(args=get_args()):
         save_only_last_obs=True,
         stack_num=args.frames_stack
     )
+
+    if not args.reduction:
+        args.state_dim = env.observation_space.shape[0]
+    print("observation:", env.observation_space.shape)
+    NECSA_DICT = {
+        'order' : args.order,
+        'grid_num' : args.grid_num,
+        'decay' : args.decay,
+        'repair_scope' : args.repair_scope,
+        'mode' : args.mode,
+        'reduction' : args.reduction,
+        'raw_state_dim' : 3136,
+        'state_dim' : args.state_dim,
+        'state_min' : args.state_min,
+        'state_max' : args.state_max,
+    }
+    feature_net = DQN(*env.observation_space.shape, action_shape=None, features_only=True)
     # collector
-    train_collector = Collector(policy, train_envs, buffer, exploration_noise=True)
+    train_collector = NECSA_Collector_ATARI(feature_net, policy, train_envs, buffer, exploration_noise=True, NECSA_DICT = NECSA_DICT)
     test_collector = Collector(policy, test_envs, exploration_noise=True)
 
     # log
@@ -231,7 +258,10 @@ def test_dqn(args=get_args()):
         exit(0)
 
     # test train_collector and start filling replay buffer
+    print("batch_size:",args.batch_size)
+    print("n_step:",args.batch_size * args.training_num)
     train_collector.collect(n_step=args.batch_size * args.training_num)
+    print("pass")
     # trainer
     result = offpolicy_trainer(
         policy,
@@ -260,6 +290,7 @@ def test_dqn(args=get_args()):
     print(reward_save_path)
     with open(reward_save_path, 'w') as f:
         json.dump(test_collector.policy_eval_results, f)
+
     pprint.pprint(result)
     watch()
 

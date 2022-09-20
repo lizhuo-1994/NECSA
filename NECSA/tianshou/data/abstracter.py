@@ -1,5 +1,6 @@
 import os,sys
 import copy
+import torch
 import numpy as np
 import pickle, joblib, time
 from .interfaces import grid_abs_analysis
@@ -11,7 +12,7 @@ import json
 
 class ScoreInspector:
     
-    def __init__(self, order, grid_num, raw_state_dim, state_dim, state_min, state_max, action_dim, action_min, action_max, mode, reduction):
+    def __init__(self, order, grid_num, raw_state_dim, state_dim, state_min, state_max, mode, reduction, action_dim=None, action_min=None, action_max=None):
 
         self.order = order
         self.grid_num = grid_num
@@ -115,7 +116,11 @@ class ScoreInspector:
             
     
     def start_pattern_abstract(self, con_states, rewards):
-
+        
+        # print(type(con_states))
+        con_states = np.array(con_states)
+        # print(type(con_states))
+        # print(con_states.shape)
         con_states = np.array(con_states)
 
         if self.mode == 'state':
@@ -188,10 +193,10 @@ class Abstracter:
 
         
     def append(self, con_state, reward, done):
-
+        # print(type(con_state))
+        con_state = con_state.detach().numpy()
         if self.inspector.reduction:
             con_state = self.dim_reduction(con_state)
-
         self.con_states.append(con_state)
         self.con_reward.append(reward)
         self.con_dones.append(done)
