@@ -350,7 +350,7 @@ class NECSA_Collector(object):
 
             if done:
                 self.reward_list = self.abstracter.reward_shaping(np.array(self.state_action_list), np.array(self.reward_list))
-                self.ep_reward = copy.deepcopy(self.reward_list )
+                self.ep_reward = copy.deepcopy(self.reward_list)
                 self.state_action_list = []
                 self.reward_list = []
                 self.abstracter.inspector.sync_scores()
@@ -380,8 +380,14 @@ class NECSA_Collector(object):
                 self.data, buffer_ids=ready_env_ids
             )
 
+            
+
             if done:
-                self.buffer.rew[ep_idx[0]: ep_idx[0] + ep_len[0]] = self.ep_reward
+                if self.collect_step < 950000:
+                    self.buffer.rew[ep_idx[0]: ep_idx[0] + ep_len[0]] = self.ep_reward
+                else:
+                    pass
+                    #print(ep_idx[0], ep_len[0], len(self.ep_reward), self.ep_reward)
 
 
             # collect statistics

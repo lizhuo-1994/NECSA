@@ -35,7 +35,7 @@ def get_args():
     parser.add_argument("--update-actor-freq", type=int, default=2)
     parser.add_argument("--start-timesteps", type=int, default=25000)
     parser.add_argument("--epoch", type=int, default=200)
-    parser.add_argument("--step-per-epoch", type=int, default=5000)
+    parser.add_argument("--step-per-epoch", type=int, default=1000)
     parser.add_argument("--step-per-collect", type=int, default=1)
     parser.add_argument("--update-per-step", type=int, default=1)
     parser.add_argument("--n-step", type=int, default=1)
@@ -132,7 +132,7 @@ def test_td3(args=get_args()):
     if args.training_num > 1:
         buffer = VectorReplayBuffer(args.buffer_size, len(train_envs))
     else:
-        buffer = PrioritizedReplayBuffer(args.buffer_size)
+        buffer = ReplayBuffer(args.buffer_size)
     train_collector = Collector(policy, train_envs, buffer, exploration_noise=True)
     test_collector = Collector(policy, test_envs)
     train_collector.collect(n_step=args.start_timesteps, random=True)

@@ -42,6 +42,7 @@ class ScoreInspector:
         
         self.setup()
 
+
     
     def setup(self):
 
@@ -65,7 +66,7 @@ class ScoreInspector:
                 self.max_state = np.array([self.state_max for i in range(self.raw_state_dim)] + [self.action_max for i in range(self.action_dim)])
 
         self.min_avg_proceed = 0
-        self.max_avg_proceed = 100
+        self.max_avg_proceed = 1000
 
         #self.scores = scores
         self.score_avg = 0
@@ -104,15 +105,15 @@ class ScoreInspector:
             self.states_info.update(new_states_info)
             self.score_avg = np.mean([self.states_info[abs_state]['score'] for abs_state in self.states_info.keys()])
             
-            '''
-            print('############################################################')
-            #print('Abstract states :\t', self.states_info)
-            print('Abstract states number :\t', len(self.states_info.keys()))
-            print('Average states score :\t', self.score_avg)
-            print('Queue size :\t',self.s_token.qsize())
-            print('min and max proceed', self.min_avg_proceed, self.max_avg_proceed)
-            print('############################################################')
-            '''
+            
+            # print('############################################################')
+            # #print('Abstract states :\t', self.states_info)
+            # print('Abstract states number :\t', len(self.states_info.keys()))
+            # print('Average states score :\t', self.score_avg)
+            # print('Queue size :\t',self.s_token.qsize())
+            # print('min and max proceed', self.min_avg_proceed, self.max_avg_proceed)
+            # print('############################################################')
+            
             
     
     def start_pattern_abstract(self, con_states, rewards):
@@ -197,11 +198,14 @@ class Abstracter:
         con_state = con_state.detach().numpy()
         if self.inspector.reduction:
             con_state = self.dim_reduction(con_state)
+
         self.con_states.append(con_state)
         self.con_reward.append(reward)
         self.con_dones.append(done)
 
         if done:
+            if self.inspector.reduction:
+                self.con_states = self.dim_reduction(self.con_states)
             self.inspector.start_pattern_abstract(self.con_states, self.con_reward)
             self.clear()
     
@@ -212,9 +216,6 @@ class Abstracter:
     
     def handle_pattern(self,con_states,rewards):
 
-        if self.inspector.reduction:
-            con_states = self.dim_reduction(con_states)
-        
         abs_pattern = self.inspector.discretize_states(con_states)
         
         if len(abs_pattern) != self.order:
@@ -233,6 +234,9 @@ class Abstracter:
 
 
     def reward_shaping(self, state_list, reward_list):
+
+        if self.inspector.reduction:
+            state_list = self.dim_reduction(state_list)
         
         shaping_reward_list = copy.deepcopy(reward_list)
 

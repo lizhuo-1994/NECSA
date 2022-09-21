@@ -351,9 +351,9 @@ class NECSA_Collector_ATARI(object):
             # print("obs_feature:", obs_feature.shape)
             reward = rew[0]
             done_env = done[0]
-            self.abstracter.append(obs_feature, reward, done_env)
+            self.abstracter.append(obs_feature.detach().numpy(), reward, done_env)
             if self.abstracter.inspector.mode == 'state':
-                self.state_action_list.append(obs_feature)
+                self.state_action_list.append(obs_feature.detach().numpy())
             self.reward_list.append(reward)
 
             state_action_list = torch.stack(self.state_action_list, 0).detach().numpy()

@@ -1,33 +1,23 @@
- python ddpg.py --task Hopper-v3 --epoch 400
+python ddpg.py --task Humanoid-v3 --epoch 1000 
 pkill -f ddpg
- python ddpg.py --task Hopper-v3 --epoch 400
+python ddpg.py --task Humanoid-v3 --epoch 1000
 pkill -f ddpg
- python ddpg.py --task Hopper-v3 --epoch 400
+python ddpg.py --task Humanoid-v3 --epoch 1000
 pkill -f ddpg
- python ddpg.py --task Hopper-v3 --epoch 400
+python ddpg.py --task Humanoid-v3 --epoch 1000
 pkill -f ddpg
- python ddpg.py --task Hopper-v3 --epoch 400
+python ddpg.py --task Humanoid-v3 --epoch 1000
 pkill -f ddpg
 
 
- python ppo.py --task Hopper-v3 --epoch 400
-pkill -f ppo
- python ppo.py --task Hopper-v3 --epoch 400
-pkill -f ppo
- python ppo.py --task Hopper-v3 --epoch 400
-pkill -f ppo
- python ppo.py --task Hopper-v3 --epoch 400
-pkill -f ppo
- python ppo.py --task Hopper-v3 --epoch 400
-pkill -f ppo
 
- python td3.py --task Hopper-v3 --epoch 400
+python td3.py --task Humanoid-v3 --epoch 1000
 pkill -f td3
- python td3.py --task Hopper-v3 --epoch 400
+python td3.py --task Humanoid-v3 --epoch 1000
 pkill -f td3
- python td3.py --task Hopper-v3 --epoch 400
+python td3.py --task Humanoid-v3 --epoch 1000
 pkill -f td3
- python td3.py --task Hopper-v3 --epoch 400
+python td3.py --task Humanoid-v3 --epoch 1000
 pkill -f td3
- python td3.py --task Hopper-v3 --epoch 400
+python td3.py --task Humanoid-v3 --epoch 1000
 pkill -f td3
