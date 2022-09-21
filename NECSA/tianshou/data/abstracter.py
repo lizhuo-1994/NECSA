@@ -195,10 +195,10 @@ class Abstracter:
         
     def append(self, con_state, reward, done):
         # print(type(con_state))
-        if self.inspector.reduction:
-            con_state = self.dim_reduction(con_state)
-
-        self.con_states.append(con_state)
+        if type(con_state) == torch.Tensor:
+            self.con_states.append(con_state.detach().numpy())
+        else:
+            self.con_states.append(con_state)
         self.con_reward.append(reward)
         self.con_dones.append(done)
 

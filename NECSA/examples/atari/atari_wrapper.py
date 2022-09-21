@@ -10,10 +10,11 @@ import numpy as np
 
 from tianshou.env import ShmemVectorEnv
 
-try:
-    import envpool
-except ImportError:
-    envpool = None
+# try:
+#     import envpool
+# except ImportError:
+#     envpool = None
+envpool = None
 
 
 class NoopResetEnv(gym.Wrapper):
@@ -239,7 +240,7 @@ def wrap_deepmind(
     :param bool warp_frame: wrap the grayscale + resize observation wrapper.
     :return: the wrapped atari environment.
     """
-    assert 'NoFrameskip' in env_id
+    # assert 'NoFrameskip' in env_id
     env = gym.make(env_id)
     env = NoopResetEnv(env, noop_max=30)
     env = MaxAndSkipEnv(env, skip=4)
