@@ -195,7 +195,6 @@ class Abstracter:
         
     def append(self, con_state, reward, done):
         # print(type(con_state))
-        con_state = con_state.detach().numpy()
         if self.inspector.reduction:
             con_state = self.dim_reduction(con_state)
 
