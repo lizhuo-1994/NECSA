@@ -32,7 +32,7 @@ This repo is based on [tianshou](https://tianshou.readthedocs.io/en/master/index
 
 ## Citing Tianshou
 
-Our work is highly depending on tianshou, thanks to the efforts by the developers. Please kindly cite thier paper if you reference our repo.
+Our work is highly depending on tianshou, thanks to the efforts by the developers. Please kindly cite the paper if you reference our repo.
 
 ```latex
 @article{tianshou,
