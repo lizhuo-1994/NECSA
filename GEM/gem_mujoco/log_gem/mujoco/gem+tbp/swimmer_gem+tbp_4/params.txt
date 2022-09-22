@@ -1,1 +1,0 @@
-{"env_type": "mujoco", "env_id": "Swimmer-v3", "agent": "GEM", "layer_norm": false, "evaluation": true, "seed": 4, "comment": "swimmer_gem+tbp_4", "gamma": 0.99, "num_timesteps": 400001, "max_steps": 1000, "delay_step": 0}

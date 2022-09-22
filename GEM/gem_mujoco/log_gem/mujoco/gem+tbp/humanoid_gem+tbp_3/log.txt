@@ -1,1 +1,0 @@
-Logging to ./log_gem/mujoco/gem+tbp/humanoid_gem+tbp_3
