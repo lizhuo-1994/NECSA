@@ -11,9 +11,9 @@ import json
 
 class ScoreInspector:
     
-    def __init__(self, order, grid_num, raw_state_dim, state_dim, state_min, state_max, action_dim, action_min, action_max, mode, reduction):
+    def __init__(self, step, grid_num, raw_state_dim, state_dim, state_min, state_max, action_dim, action_min, action_max, mode, reduction):
 
-        self.order = order
+        self.step = step
         self.grid_num = grid_num
         self.raw_state_dim = raw_state_dim
         self.state_dim = state_dim
@@ -139,7 +139,7 @@ class ScoreInspector:
 
         proceed = sum(rewards)
         for i in range(len(abs_states)):
-            if i + self.order >= len(abs_states):
+            if i + self.step >= len(abs_states):
                 break
                 
             
@@ -147,7 +147,7 @@ class ScoreInspector:
                 min_avg_proceed = proceed
             if proceed > self.max_avg_proceed:
                 max_avg_proceed = proceed
-            pattern = abs_states[i:i+self.order]
+            pattern = abs_states[i:i+self.step]
             pattern = '-'.join(pattern)
 
             if pattern in self.states_info.keys():
@@ -173,14 +173,13 @@ class ScoreInspector:
 
 class Abstracter:
     
-    def __init__(self, order, decay, repair_scope):
+    def __init__(self, step, epsilon):
         self.con_states = []
         self.con_values = []
         self.con_reward = []
         self.con_dones  = []
-        self.order = order
-        self.decay = decay
-        self.repair_scope = repair_scope
+        self.step = step
+        self.epsilon = epsilon
         self.inspector = None
 
     def dim_reduction(self, state):
@@ -209,14 +208,14 @@ class Abstracter:
 
         abs_pattern = self.inspector.discretize_states(con_states)
         
-        if len(abs_pattern) != self.order:
+        if len(abs_pattern) != self.step:
             return rewards[0]
         pattern = '-'.join(abs_pattern)
         score, time = self.inspector.inquery(pattern)
         
         if score != None:
             if  time > 0:
-                delta = (score - self.inspector.score_avg) * self.decay
+                delta = (score - self.inspector.score_avg) * self.epsilon
                 #print(abs_pattern, score, self.inspector.score_avg, rewards[0], rewards[0] + delta)
                 rewards[0] += delta
                 
@@ -231,10 +230,10 @@ class Abstracter:
         
         shaping_reward_list = copy.deepcopy(reward_list)
 
-        for i in range(len(state_list) - self.order):
+        for i in range(len(state_list) - self.step):
 
-            target_states = state_list[i:i+self.order]
-            target_rewards = reward_list[i:i+self.order]
+            target_states = state_list[i:i+self.step]
+            target_rewards = reward_list[i:i+self.step]
 
             shaped_reward = self.handle_pattern(target_states, target_rewards)
             shaping_reward_list[i] = shaped_reward

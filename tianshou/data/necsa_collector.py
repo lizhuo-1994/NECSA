@@ -79,13 +79,12 @@ class NECSA_Collector(object):
         self.reset(False)
 
         self.abstracter = Abstracter(
-            NECSA_DICT['order'], 
+            NECSA_DICT['step'], 
             NECSA_DICT['decay'], 
-            NECSA_DICT['repair_scope']
             )
 
         self.abstracter.inspector = ScoreInspector(
-            NECSA_DICT['order'], 
+            NECSA_DICT['step'], 
             NECSA_DICT['grid_num'], 
             NECSA_DICT['raw_state_dim'], 
             NECSA_DICT['state_dim'], 

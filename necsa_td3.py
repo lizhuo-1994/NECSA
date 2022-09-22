@@ -64,9 +64,9 @@ def get_args():
         help="watch the play of pre-trained policy only",
     )
 
-    parser.add_argument("--order", type=int, default=3)                  # Directory for storing all experimental data
+    parser.add_argument("--step", type=int, default=3)                  # Directory for storing all experimental data
     parser.add_argument("--grid_num", type=int, default=5)              # Directory for storing all experimental data
-    parser.add_argument("--decay", type=float, default=0.2 )            # Directory for storing all experimental data
+    parser.add_argument("--epsilon", type=float, default=0.2 )            # Directory for storing all experimental data
     parser.add_argument("--repair_scope", type=float, default=1.0 )     # 
     parser.add_argument("--state_dim", type=int, default=16 ) 
     parser.add_argument("--state_min", type=float, default=-10 )        # 
@@ -152,10 +152,9 @@ def test_td3(args=get_args()):
         args.state_dim = env.observation_space.shape[0]
 
     NECSA_DICT = {
-        'order' : args.order,
+        'step' : args.step,
         'grid_num' : args.grid_num,
-        'decay' : args.decay,
-        'repair_scope' : args.repair_scope,
+        'epsilon' : args.epsilon,
         'mode' : args.mode,
         'reduction' : args.reduction,
         'raw_state_dim' : env.observation_space.shape[0],
@@ -223,7 +222,7 @@ def test_td3(args=get_args()):
 
     reward_save_path = 'results/' + args.task + '/' + args.algo_name.upper()
     if 'necsa' in args.algo_name:
-        reward_save_path = reward_save_path + '_' + str(args.order)
+        reward_save_path = reward_save_path + '_' + str(args.step)
     now = datetime.datetime.now().strftime("%y%m%d-%H%M%S")
     reward_save_path = reward_save_path + '/' + now + '.json'
     print(reward_save_path)
