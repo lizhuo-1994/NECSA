@@ -28,7 +28,7 @@
 
 ## 4 Experiment results:
 
-  * In ./results
+  * Data will be automatically saved into ./results
 
 ## 5 Citing and Thanks 
 
