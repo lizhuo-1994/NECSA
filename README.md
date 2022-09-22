@@ -30,7 +30,7 @@ This repo is based on [tianshou](https://tianshou.readthedocs.io/en/master/index
 
   * In ./results
 
-## Citing Tianshou
+## 5 Citing and Thanks 
 
 Our work is highly depending on tianshou, thanks to the efforts by the developers. Please kindly cite the paper if you reference our repo.
 
