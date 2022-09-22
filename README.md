@@ -32,7 +32,7 @@
 
 ## 5 Citing and Thanks 
 
-Our work is highly depending on tianshou, thanks to the efforts by the developers. Please kindly cite the paper if you reference our repo.
+Our work is highly depending on tianshou, thanks to the efforts by the developers. Please kindly cite the paper if you referenced our repo.
 
 ```latex
 @article{tianshou,
