@@ -20,7 +20,7 @@ This repo is based on [tianshou](https://tianshou.readthedocs.io/en/master/index
   
   * Example:
          
-         python necsa_td3.py --task Walker2d-v3 --epoch 1000 --step 3 --grid_num 5 --epsilon 2.0 --mode state_action
+         python necsa_td3.py --task Walker2d-v3 --epoch 1000 --step 3 --grid_num 5 --epsilon 0.2 --mode state_action
 
   * Execute the scripts:
          
