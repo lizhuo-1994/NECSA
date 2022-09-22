@@ -32,34 +32,34 @@
 
 ## 5 Citing and Thanks 
 
-Our work is highly depending on tianshou, thanks to the efforts by the developers. Please kindly cite the paper if you referenced our repo.
+  * Our work is highly depending on tianshou, thanks to the efforts by the developers. Please kindly cite the paper if you referenced our repo.
 
-```latex
-@article{tianshou,
-  title={Tianshou: A Highly Modularized Deep Reinforcement Learning Library},
-  author={Weng, Jiayi and Chen, Huayu and Yan, Dong and You, Kaichao and Duburcq, Alexis and Zhang, Minghao and Su, Yi and Su, Hang and Zhu, Jun},
-  journal={arXiv preprint arXiv:2107.14171},
-  year={2021}
-}
-```
+  ```latex
+  @article{tianshou,
+    title={Tianshou: A Highly Modularized Deep Reinforcement Learning Library},
+    author={Weng, Jiayi and Chen, Huayu and Yan, Dong and You, Kaichao and Duburcq, Alexis and Zhang, Minghao and Su, Yi and Su, Hang and Zhu, Jun},
+    journal={arXiv preprint arXiv:2107.14171},
+    year={2021}
+  }
+  ```
 
-Our work NECSA is inspired by 2 state-of-the-art episodic control algorithms: [EMAC](https://github.com/schatty/EMAC) and [GEM](https://github.com/MouseHu/GEM). Please refer to the corresponding repo for details.
+  * Our work NECSA is inspired by 2 state-of-the-art episodic control algorithms: [EMAC](https://github.com/schatty/EMAC) and [GEM](https://github.com/MouseHu/GEM). Please refer to the corresponding repo for details.
 
-```latex
-@article{kuznetsov2021solving,
-  title={Solving Continuous Control with Episodic Memory},
-  author={Kuznetsov, Igor and Filchenkov, Andrey},
-  journal={arXiv preprint arXiv:2106.08832},
-  year={2021}
-}
-```
+  ```latex
+  @article{kuznetsov2021solving,
+    title={Solving Continuous Control with Episodic Memory},
+    author={Kuznetsov, Igor and Filchenkov, Andrey},
+    journal={arXiv preprint arXiv:2106.08832},
+    year={2021}
+  }
+  ```
 
-```latex
-@article{hu2021generalizable,
-  title={Generalizable episodic memory for deep reinforcement learning},
-  author={Hu, Hao and Ye, Jianing and Zhu, Guangxiang and Ren, Zhizhou and Zhang, Chongjie},
-  journal={arXiv preprint arXiv:2103.06469},
-  year={2021}
-}
-```
+  ```latex
+  @article{hu2021generalizable,
+    title={Generalizable episodic memory for deep reinforcement learning},
+    author={Hu, Hao and Ye, Jianing and Zhu, Guangxiang and Ren, Zhizhou and Zhang, Chongjie},
+    journal={arXiv preprint arXiv:2103.06469},
+    year={2021}
+  }
+  ```
   
