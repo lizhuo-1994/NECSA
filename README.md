@@ -1,5 +1,5 @@
 # Neural Episodic Control with State Abstraction
-This repo is based on [tianshou](https://tianshou.readthedocs.io/en/master/index.html) platform. Please refer the original repo for installation.
+[NECSA](https://sites.google.com/view/drl-necsa) is based on [tianshou](https://tianshou.readthedocs.io/en/master/index.html) platform. Please refer the original repo for installation.
 
 ## 0 Introduction
 
@@ -43,7 +43,7 @@ Our work is highly depending on tianshou, thanks to the efforts by the developer
 }
 ```
 
-Our work is inspired by 2 the state-of-the-art episodic control algorithms: [EMAC](https://github.com/schatty/EMAC) and [GEM](https://github.com/MouseHu/GEM). Please refer to the corresponding repo for details.
+Our work NECSA is inspired by 2 state-of-the-art episodic control algorithms: [EMAC](https://github.com/schatty/EMAC) and [GEM](https://github.com/MouseHu/GEM). Please refer to the corresponding repo for details.
 
 ```latex
 @article{kuznetsov2021solving,
