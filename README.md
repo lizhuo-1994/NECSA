@@ -1,13 +1,13 @@
 # Neural Episodic Control with State Abstraction
-[NECSA](https://sites.google.com/view/drl-necsa) is based on [tianshou](https://tianshou.readthedocs.io/en/master/index.html) platform. Please refer the original repo for installation.
+  * [NECSA](https://sites.google.com/view/drl-necsa) is based on [tianshou](https://tianshou.readthedocs.io/en/master/index.html) platform. Please refer the original repo for installation.
 
 ## 0 Introduction
 
-  NECSA is implemented in a highly supplementary way. Please refer to tianshou/data/necsa_collector.py for details.
+  * NECSA is implemented in a highly supplementary way. Please refer to tianshou/data/necsa_collector.py for details.
 
 ## 1 requirements
 
-  refer to env.yaml
+  * refer to env.yaml
 
 ## 2 Anaconda
 
