@@ -80,7 +80,7 @@ class NECSA_Collector(object):
 
         self.abstracter = Abstracter(
             NECSA_DICT['step'], 
-            NECSA_DICT['decay'], 
+            NECSA_DICT['epsilon'], 
             )
 
         self.abstracter.inspector = ScoreInspector(
