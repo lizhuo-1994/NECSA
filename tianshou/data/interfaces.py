@@ -249,9 +249,7 @@ def calc_coverage(abs_states,grid_num,n_componenct):
 
 from collections import defaultdict
 
-# abs2con：记录抽象状态编号和具体状态下表的索引关系；
-# state_dic：记录经过状态s,失败的trace数量和胜利trace的数量
-# transistion_dic：记录状态s的迁移关系，即下一个状态
+
 def analyze_abstraction(abs_states, abs_traces):
     abs2con = defaultdict(list)
     for idx,key in enumerate(abs_states):
@@ -321,7 +319,6 @@ def fetchCriticalState(state_dic, lowest, threshold, savepath):
     return critical, good_list, bad_list
 
 import numpy as np
-# 以抽象状态中所有具体状态的平均值作为该抽象状态的中心
 def get_abs_center( concrete_states , abstract_dic, state_list):
     abs_state_centers = []
     for state in state_list:
@@ -330,7 +327,6 @@ def get_abs_center( concrete_states , abstract_dic, state_list):
         abs_state_centers.append(abs_state)
     return np.array(abs_state_centers)
 
-# 计算当前抽象状态集合在抽象状态空间的coverage
 def calc_coverage(abs_states,grid_num,n_componenct):
     uniq = len(np.unique(np.array(abs_states)))
     total = pow(grid_num, n_componenct)
@@ -338,7 +334,6 @@ def calc_coverage(abs_states,grid_num,n_componenct):
     print("The number of total states:{}".format(total))
     print("Coverage:{:.2f}".format((uniq*1.0)/total))
 
-# 经过抽象状态s，胜利的trace数量大于失败的trace数量; 记录一个trace出现/不出现某个状态
 def abs_state_eval(abs_traces):
     state_dic = defaultdict(list) # {state:[fail_stat, success_stat]}
     edge_dic = defaultdict(list)
@@ -382,7 +377,6 @@ def fetchStateOrder(abs_traces):
 
     return good_list,bad_list
 
-# 抽象状态s(在所有胜利的trace中出现的次数)大于(在所有失败的trace中出现的次数+margin)。记录所有成功或失败race中状态s出现的次数
 def abs_state_eval2(abs_traces):
     state_dic = defaultdict(list) # {state:[fail_stat, success_stat]}
     edge_dic = defaultdict(list)
@@ -400,7 +394,6 @@ def abs_state_eval2(abs_traces):
             edge_dic[cur_edge][isSuccess] += 1
     return state_dic,edge_dic
 
-# 获取同一类型（胜利/失败）下抽象状态的排序（依照出现的频率）
 def fetchStateOrder2(abs_traces):
     success_traces = [item for item in abs_traces if item[-1]=='S']
     fail_traces = [item for item in abs_traces if item[-1]=='F']
