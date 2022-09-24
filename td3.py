@@ -189,7 +189,7 @@ def test_td3(args=get_args()):
 
     reward_save_path = 'results/' + args.task + '/' + args.algo_name.upper()
     if 'necsa' in args.algo_name:
-        reward_save_path = reward_save_path + '_' + str(args.order)
+        reward_save_path = reward_save_path + '_' + str(args.step)
     now = datetime.datetime.now().strftime("%y%m%d-%H%M%S")
     os.makedirs(reward_save_path + '/' + now, exist_ok=True)
     reward_save_path = reward_save_path + '/' + now + '.json'

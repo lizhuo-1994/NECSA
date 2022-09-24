@@ -67,7 +67,6 @@ def get_args():
     parser.add_argument("--step", type=int, default=3)                  # Directory for storing all experimental data
     parser.add_argument("--grid_num", type=int, default=5)              # Directory for storing all experimental data
     parser.add_argument("--epsilon", type=float, default=0.2 )            # Directory for storing all experimental data
-    parser.add_argument("--repair_scope", type=float, default=1.0 )     # 
     parser.add_argument("--state_dim", type=int, default=16 ) 
     parser.add_argument("--state_min", type=float, default=-10 )        # 
     parser.add_argument("--state_max", type=float, default=10 )         # state_max, state_min

@@ -10,7 +10,7 @@ import torch
 from mujoco_env import make_mujoco_env
 from torch.utils.tensorboard import SummaryWriter
 
-from tianshou.data import Collector, ReplayBuffer, VectorReplayBuffer
+from tianshou.data import Collector, ReplayBuffer, VectorReplayBuffer, NECSA_Collector
 from tianshou.exploration import GaussianNoise
 from tianshou.policy import DDPGPolicy
 from tianshou.trainer import offpolicy_trainer
@@ -59,6 +59,16 @@ def get_args():
         action="store_true",
         help="watch the play of pre-trained policy only",
     )
+
+    parser.add_argument("--step", type=int, default=3)                  # Directory for storing all experimental data
+    parser.add_argument("--grid_num", type=int, default=5)              # Directory for storing all experimental data
+    parser.add_argument("--epsilon", type=float, default=0.2 )            # Directory for storing all experimental data
+    parser.add_argument("--state_dim", type=int, default=16 ) 
+    parser.add_argument("--state_min", type=float, default=-10 )        # 
+    parser.add_argument("--state_max", type=float, default=10 )         # state_max, state_min
+    parser.add_argument("--mode", type=str, default='state_action', choices=['state', 'state_action'] )   # 
+    parser.add_argument("--reduction", action="store_true")   # 
+
     return parser.parse_args()
 
 
@@ -113,13 +123,33 @@ def test_ddpg(args=get_args()):
         buffer = VectorReplayBuffer(args.buffer_size, len(train_envs))
     else:
         buffer = ReplayBuffer(args.buffer_size)
-    train_collector = Collector(policy, train_envs, buffer, exploration_noise=True)
+
+    if not args.reduction:
+        args.state_dim = env.observation_space.shape[0]
+        
+    NECSA_DICT = {
+        'step' : args.step,
+        'grid_num' : args.grid_num,
+        'epsilon' : args.epsilon,
+        'mode' : args.mode,
+        'reduction' : args.reduction,
+        'raw_state_dim' : env.observation_space.shape[0],
+        'state_dim' : args.state_dim,
+        'state_min' : args.state_min,
+        'state_max' : args.state_max,
+        'action_dim' : env.action_space.shape[0],
+        'action_min' : env.action_space.low[0],
+        'action_max' : env.action_space.high[0]
+    }
+    print(NECSA_DICT)
+
+    train_collector = NECSA_Collector(policy, train_envs, buffer, exploration_noise=True, NECSA_DICT = NECSA_DICT)
     test_collector = Collector(policy, test_envs)
     train_collector.collect(n_step=args.start_timesteps, random=True)
 
     # log
     now = datetime.datetime.now().strftime("%y%m%d-%H%M%S")
-    args.algo_name = "ddpg"
+    args.algo_name = "necsa_ddpg"
     log_name = os.path.join(args.task, args.algo_name, str(args.seed), now)
     log_path = os.path.join(args.logdir, log_name)
 
