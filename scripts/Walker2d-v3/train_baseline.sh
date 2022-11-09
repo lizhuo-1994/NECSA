@@ -1,23 +1,23 @@
-python ddpg.py --task Walker2d-v3 --epoch 1000
+python ddpg.py --task Walker2d-v3 --epoch 400
 pkill -f ddpg
-python ddpg.py --task Walker2d-v3 --epoch 1000
+python ddpg.py --task Walker2d-v3 --epoch 400
 pkill -f ddpg
-python ddpg.py --task Walker2d-v3 --epoch 1000
+python ddpg.py --task Walker2d-v3 --epoch 400
 pkill -f ddpg
-python ddpg.py --task Walker2d-v3 --epoch 1000
+python ddpg.py --task Walker2d-v3 --epoch 400
 pkill -f ddpg
-python ddpg.py --task Walker2d-v3 --epoch 1000
+python ddpg.py --task Walker2d-v3 --epoch 400
 pkill -f ddpg
 
 
 
-python td3.py --task Walker2d-v3 --epoch 1000
+python td3.py --task Walker2d-v3 --epoch 400
 pkill -f td3
-python td3.py --task Walker2d-v3 --epoch 1000
+python td3.py --task Walker2d-v3 --epoch 400
 pkill -f td3
-python td3.py --task Walker2d-v3 --epoch 1000
+python td3.py --task Walker2d-v3 --epoch 400
 pkill -f td3
-python td3.py --task Walker2d-v3 --epoch 1000
+python td3.py --task Walker2d-v3 --epoch 400
 pkill -f td3
-python td3.py --task Walker2d-v3 --epoch 1000
+python td3.py --task Walker2d-v3 --epoch 400
 pkill -f td3
