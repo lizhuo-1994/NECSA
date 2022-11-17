@@ -55,6 +55,10 @@ class ScoreInspector:
                 self.project_matrix = np.random.uniform(0,0.1,(self.raw_state_dim + self.action_dim,self.state_dim))
                 self.min_state = np.dot(np.array([self.state_min for i in range(self.raw_state_dim)]+ [self.action_min for i in range(self.action_dim)]), self.project_matrix)
                 self.max_state = np.dot(np.array([self.state_max for i in range(self.raw_state_dim)]+ [self.action_max for i in range(self.action_dim)]), self.project_matrix)
+            elif self.mode == 'hidden':
+                self.project_matrix = np.random.uniform(0,0.1,(self.raw_state_dim,self.state_dim))
+                self.min_state = np.dot(np.array([self.state_min for i in range(self.raw_state_dim)]), self.project_matrix)
+                self.max_state = np.dot(np.array([self.state_max for i in range(self.raw_state_dim)]), self.project_matrix)
 
         else:
             if self.mode == 'state':
@@ -63,6 +67,9 @@ class ScoreInspector:
             elif self.mode == 'state_action':
                 self.min_state = np.array([self.state_min for i in range(self.raw_state_dim)] + [self.action_min for i in range(self.action_dim)])
                 self.max_state = np.array([self.state_max for i in range(self.raw_state_dim)] + [self.action_max for i in range(self.action_dim)])
+            elif self.mode == 'hidden':
+                self.min_state = np.array([self.state_min for i in range(self.raw_state_dim)])
+                self.max_state = np.array([self.state_max for i in range(self.raw_state_dim)])
 
         self.min_avg_proceed = 0
         self.max_avg_proceed = 1000

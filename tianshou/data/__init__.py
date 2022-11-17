@@ -17,6 +17,7 @@ from tianshou.data.buffer.vecbuf import (
 from tianshou.data.buffer.cached import CachedReplayBuffer
 from tianshou.data.collector import Collector, AsyncCollector
 from tianshou.data.necsa_collector import NECSA_Collector
+from tianshou.data.necsa_atari_collector import NECSA_Atari_Collector
 from tianshou.data.necsa_adv_collector import NECSA_Adv_Collector
 
 __all__ = [
