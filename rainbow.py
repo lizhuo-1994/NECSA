@@ -1,6 +1,6 @@
 import argparse
 import datetime
-import os
+import os, json
 import pprint
 
 import numpy as np
@@ -40,8 +40,8 @@ def get_args():
     parser.add_argument("--no-weight-norm", action="store_true", default=False)
     parser.add_argument("--n-step", type=int, default=3)
     parser.add_argument("--target-update-freq", type=int, default=500)
-    parser.add_argument("--epoch", type=int, default=100)
-    parser.add_argument("--step-per-epoch", type=int, default=100000)
+    parser.add_argument("--epoch", type=int, default=1000)
+    parser.add_argument("--step-per-epoch", type=int, default=10000)
     parser.add_argument("--step-per-collect", type=int, default=10)
     parser.add_argument("--update-per-step", type=float, default=0.1)
     parser.add_argument("--batch-size", type=int, default=32)
@@ -139,6 +139,8 @@ def test_rainbow(args=get_args()):
     # collector
     train_collector = Collector(policy, train_envs, buffer, exploration_noise=True)
     test_collector = Collector(policy, test_envs, exploration_noise=True)
+
+    args.algo_name = 'rainbow'
 
     # log
     now = datetime.datetime.now().strftime("%y%m%d-%H%M%S")
@@ -255,6 +257,15 @@ def test_rainbow(args=get_args()):
     pprint.pprint(result)
     watch()
 
+    reward_save_path = 'results/' + args.task + '/' + args.algo_name.upper()
+    if 'necsa' in args.algo_name:
+        reward_save_path = reward_save_path + '_' + str(args.step)
+    now = datetime.datetime.now().strftime("%y%m%d-%H%M%S")
+    os.makedirs(reward_save_path, exist_ok=True)
+    reward_save_path = reward_save_path + '/' + now + '.json'
+    print(reward_save_path)
+    with open(reward_save_path, 'w') as f:
+        json.dump(test_collector.policy_eval_results, f)
 
 if __name__ == "__main__":
     test_rainbow(get_args())

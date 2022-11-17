@@ -18,7 +18,7 @@ from tianshou.data.batch import _alloc_by_keys_diff
 from tianshou.env import BaseVectorEnv, DummyVectorEnv
 from tianshou.policy import BasePolicy
 
-from .abstracter import Abstracter, ScoreInspector
+from .atari_abstracter import Abstracter, ScoreInspector
 
 class NECSA_Atari_Collector(object):
     """Collector enables the policy to interact with different types of envs with \
@@ -381,12 +381,22 @@ class NECSA_Atari_Collector(object):
                 self.reward_lists[i].append(rew[i])
         
                 if done[i]:
-                    self.reward_list = self.abstracters[i].reward_shaping(np.array(self.feature_lists[i]), np.array(self.reward_lists[i]))
-                    self.ep_reward = copy.deepcopy(self.reward_list[i])
+                    self.ep_reward = self.abstracters[i].reward_shaping(np.array(self.feature_lists[i]), np.array(self.reward_lists[i]))
                     self.feature_lists[i] = []
                     self.reward_lists[i] = []
                     self.inspector.sync_scores()
-                    self.buffer.rew[ep_idx[i]: ep_idx[i] + ep_len[i]] = self.ep_reward
+                    
+                    u_bound = i*10000 + 9999
+                    l_bound = i*10000
+                    
+                    if ep_idx[i] + ep_len[i] > u_bound:
+                        update_len = u_bound - ep_idx[i]
+                        self.buffer.rew[ep_idx[i]: u_bound + 1] = self.ep_reward[:update_len + 1]
+                        self.buffer.rew[l_bound: ptr[i] + 1] = self.ep_reward[update_len + 1:]
+                    else:
+                        self.buffer.rew[ep_idx[i]: ep_idx[i] + ep_len[i]] = self.ep_reward
+
+
 
 
 

@@ -1,6 +1,6 @@
 import argparse
 import datetime
-import os
+import os, json
 import pprint
 
 import numpy as np
@@ -30,8 +30,8 @@ def get_args():
     parser.add_argument("--gamma", type=float, default=0.99)
     parser.add_argument("--n-step", type=int, default=3)
     parser.add_argument("--target-update-freq", type=int, default=500)
-    parser.add_argument("--epoch", type=int, default=100)
-    parser.add_argument("--step-per-epoch", type=int, default=100000)
+    parser.add_argument("--epoch", type=int, default=1000)
+    parser.add_argument("--step-per-epoch", type=int, default=10000)
     parser.add_argument("--step-per-collect", type=int, default=10)
     parser.add_argument("--update-per-step", type=float, default=0.1)
     parser.add_argument("--batch-size", type=int, default=32)
@@ -81,9 +81,9 @@ def get_args():
 
     parser.add_argument("--step", type=int, default=1)                  # Directory for storing all experimental data
     parser.add_argument("--grid_num", type=int, default=6)              # Directory for storing all experimental data
-    parser.add_argument("--epsilon", type=float, default=0.1 )            # Directory for storing all experimental data
+    parser.add_argument("--epsilon", type=float, default=0.1)            # Directory for storing all experimental data
     parser.add_argument("--raw_state_dim", type=int, default=64 ) 
-    parser.add_argument("--state_dim", type=int, default=25 ) 
+    parser.add_argument("--state_dim", type=int, default=24) 
     parser.add_argument("--state_min", type=float, default=0 )        # 
     parser.add_argument("--state_max", type=float, default=1 )         # state_max, state_min
     parser.add_argument("--mode", type=str, default='hidden', choices=['state', 'state_action', 'hidden'] )   # 
@@ -170,7 +170,8 @@ def test_dqn(args=get_args()):
         'action_max' : None
     }
     print(NECSA_DICT)
-
+    
+    args.algo_name = "necsa_dqn"
     # collector
     train_collector = NECSA_Atari_Collector(policy, train_envs, buffer, exploration_noise=True, NECSA_DICT = NECSA_DICT)
     test_collector = Collector(policy, test_envs, exploration_noise=True)
@@ -287,6 +288,15 @@ def test_dqn(args=get_args()):
     pprint.pprint(result)
     watch()
 
+    reward_save_path = 'results/' + args.task + '/' + args.algo_name.upper()
+    if 'necsa' in args.algo_name:
+        reward_save_path = reward_save_path + '_' + str(args.step)
+    now = datetime.datetime.now().strftime("%y%m%d-%H%M%S")
+    os.makedirs(reward_save_path, exist_ok=True)
+    reward_save_path = reward_save_path + '/' + now + '.json'
+    print(reward_save_path)
+    with open(reward_save_path, 'w') as f:
+        json.dump(test_collector.policy_eval_results, f)
 
 if __name__ == "__main__":
     test_dqn(get_args())

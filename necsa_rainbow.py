@@ -5,16 +5,14 @@ import pprint
 
 import numpy as np
 import torch
-from atari_network import DQN
+from atari_network import Rainbow
 from atari_wrapper import make_atari_env
 from torch.utils.tensorboard import SummaryWriter
 
-from tianshou.data import Collector, VectorReplayBuffer
-from tianshou.policy import DQNPolicy
-from tianshou.policy.modelbased.icm import ICMPolicy
+from tianshou.data import Collector, PrioritizedVectorReplayBuffer, VectorReplayBuffer, NECSA_Atari_Collector
+from tianshou.policy import RainbowPolicy
 from tianshou.trainer import offpolicy_trainer
 from tianshou.utils import TensorboardLogger, WandbLogger
-from tianshou.utils.net.discrete import IntrinsicCuriosityModule
 
 
 def get_args():
@@ -26,8 +24,20 @@ def get_args():
     parser.add_argument("--eps-train", type=float, default=1.)
     parser.add_argument("--eps-train-final", type=float, default=0.05)
     parser.add_argument("--buffer-size", type=int, default=100000)
-    parser.add_argument("--lr", type=float, default=0.0001)
+    parser.add_argument("--lr", type=float, default=0.0000625)
     parser.add_argument("--gamma", type=float, default=0.99)
+    parser.add_argument("--num-atoms", type=int, default=51)
+    parser.add_argument("--v-min", type=float, default=-10.)
+    parser.add_argument("--v-max", type=float, default=10.)
+    parser.add_argument("--noisy-std", type=float, default=0.1)
+    parser.add_argument("--no-dueling", action="store_true", default=False)
+    parser.add_argument("--no-noisy", action="store_true", default=False)
+    parser.add_argument("--no-priority", action="store_true", default=False)
+    parser.add_argument("--alpha", type=float, default=0.5)
+    parser.add_argument("--beta", type=float, default=0.4)
+    parser.add_argument("--beta-final", type=float, default=1.)
+    parser.add_argument("--beta-anneal-step", type=int, default=5000000)
+    parser.add_argument("--no-weight-norm", action="store_true", default=False)
     parser.add_argument("--n-step", type=int, default=3)
     parser.add_argument("--target-update-freq", type=int, default=500)
     parser.add_argument("--epoch", type=int, default=1000)
@@ -59,28 +69,23 @@ def get_args():
         help="watch the play of pre-trained policy only"
     )
     parser.add_argument("--save-buffer-name", type=str, default=None)
-    parser.add_argument(
-        "--icm-lr-scale",
-        type=float,
-        default=0.,
-        help="use intrinsic curiosity module with this lr scale"
-    )
-    parser.add_argument(
-        "--icm-reward-scale",
-        type=float,
-        default=0.01,
-        help="scaling factor for intrinsic curiosity reward"
-    )
-    parser.add_argument(
-        "--icm-forward-loss-weight",
-        type=float,
-        default=0.2,
-        help="weight for the forward model loss in ICM"
-    )
+
+
+    parser.add_argument("--step", type=int, default=1)                  # Directory for storing all experimental data
+    parser.add_argument("--grid_num", type=int, default=6)              # Directory for storing all experimental data
+    parser.add_argument("--epsilon", type=float, default=0.1)            # Directory for storing all experimental data
+    parser.add_argument("--raw_state_dim", type=int, default=64 ) 
+    parser.add_argument("--state_dim", type=int, default=24) 
+    parser.add_argument("--state_min", type=float, default=0 )        # 
+    parser.add_argument("--state_max", type=float, default=1 )         # state_max, state_min
+    parser.add_argument("--mode", type=str, default='hidden', choices=['state', 'state_action', 'hidden'] )   # 
+    parser.add_argument("--reduction", action="store_true")   # 
+
+    
     return parser.parse_args()
 
 
-def test_dqn(args=get_args()):
+def test_rainbow(args=get_args()):
     env, train_envs, test_envs = make_atari_env(
         args.task,
         args.seed,
@@ -98,57 +103,61 @@ def test_dqn(args=get_args()):
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
     # define model
-    net = DQN(*args.state_shape, args.action_shape, args.device).to(args.device)
+    net = Rainbow(
+        *args.state_shape,
+        args.action_shape,
+        args.num_atoms,
+        args.noisy_std,
+        args.device,
+        is_dueling=not args.no_dueling,
+        is_noisy=not args.no_noisy
+    )
     optim = torch.optim.Adam(net.parameters(), lr=args.lr)
     # define policy
-    policy = DQNPolicy(
+    policy = RainbowPolicy(
         net,
         optim,
         args.gamma,
+        args.num_atoms,
+        args.v_min,
+        args.v_max,
         args.n_step,
         target_update_freq=args.target_update_freq
-    )
-    if args.icm_lr_scale > 0:
-        feature_net = DQN(
-            *args.state_shape, args.action_shape, args.device, features_only=True
-        )
-        action_dim = np.prod(args.action_shape)
-        feature_dim = feature_net.output_dim
-        icm_net = IntrinsicCuriosityModule(
-            feature_net.net,
-            feature_dim,
-            action_dim,
-            hidden_sizes=[512],
-            device=args.device
-        )
-        icm_optim = torch.optim.Adam(icm_net.parameters(), lr=args.lr)
-        policy = ICMPolicy(
-            policy, icm_net, icm_optim, args.icm_lr_scale, args.icm_reward_scale,
-            args.icm_forward_loss_weight
-        ).to(args.device)
+    ).to(args.device)
     # load a previous policy
     if args.resume_path:
         policy.load_state_dict(torch.load(args.resume_path, map_location=args.device))
         print("Loaded agent from: ", args.resume_path)
     # replay buffer: `save_last_obs` and `stack_num` can be removed together
     # when you have enough RAM
-    buffer = VectorReplayBuffer(
-        args.buffer_size,
-        buffer_num=len(train_envs),
-        ignore_obs_next=True,
-        save_only_last_obs=True,
-        stack_num=args.frames_stack
-    )
+    if args.no_priority:
+        buffer = VectorReplayBuffer(
+            args.buffer_size,
+            buffer_num=len(train_envs),
+            ignore_obs_next=True,
+            save_only_last_obs=True,
+            stack_num=args.frames_stack
+        )
+    else:
+        buffer = PrioritizedVectorReplayBuffer(
+            args.buffer_size,
+            buffer_num=len(train_envs),
+            ignore_obs_next=True,
+            save_only_last_obs=True,
+            stack_num=args.frames_stack,
+            alpha=args.alpha,
+            beta=args.beta,
+            weight_norm=not args.no_weight_norm
+        )
     # collector
-    train_collector = Collector(policy, train_envs, buffer, exploration_noise=True)
+    train_collector = NECSA_Atari_Collector(policy, train_envs, buffer, exploration_noise=True)
     test_collector = Collector(policy, test_envs, exploration_noise=True)
 
-
-    args.algo_name = "dqn"
+    args.algo_name = 'necsa_rainbow'
 
     # log
     now = datetime.datetime.now().strftime("%y%m%d-%H%M%S")
-    args.algo_name = "dqn_icm" if args.icm_lr_scale > 0 else "dqn"
+    args.algo_name = "rainbow"
     log_name = os.path.join(args.task, args.algo_name, str(args.seed), now)
     log_path = os.path.join(args.logdir, log_name)
 
@@ -189,15 +198,18 @@ def test_dqn(args=get_args()):
         policy.set_eps(eps)
         if env_step % 1000 == 0:
             logger.write("train/env_step", env_step, {"train/eps": eps})
+        if not args.no_priority:
+            if env_step <= args.beta_anneal_step:
+                beta = args.beta - env_step / args.beta_anneal_step * \
+                    (args.beta - args.beta_final)
+            else:
+                beta = args.beta_final
+            buffer.set_beta(beta)
+            if env_step % 1000 == 0:
+                logger.write("train/env_step", env_step, {"train/beta": beta})
 
     def test_fn(epoch, env_step):
         policy.set_eps(args.eps_test)
-
-    def save_checkpoint_fn(epoch, env_step, gradient_step):
-        # see also: https://pytorch.org/tutorials/beginner/saving_loading_models.html
-        ckpt_path = os.path.join(log_path, f"checkpoint_{epoch}.pth")
-        torch.save({"model": policy.state_dict()}, ckpt_path)
-        return ckpt_path
 
     # watch agent's performance
     def watch():
@@ -207,12 +219,14 @@ def test_dqn(args=get_args()):
         test_envs.seed(args.seed)
         if args.save_buffer_name:
             print(f"Generate buffer with size {args.buffer_size}")
-            buffer = VectorReplayBuffer(
+            buffer = PrioritizedVectorReplayBuffer(
                 args.buffer_size,
                 buffer_num=len(test_envs),
                 ignore_obs_next=True,
                 save_only_last_obs=True,
-                stack_num=args.frames_stack
+                stack_num=args.frames_stack,
+                alpha=args.alpha,
+                beta=args.beta
             )
             collector = Collector(policy, test_envs, buffer, exploration_noise=True)
             result = collector.collect(n_step=args.buffer_size)
@@ -251,8 +265,6 @@ def test_dqn(args=get_args()):
         logger=logger,
         update_per_step=args.update_per_step,
         test_in_train=False,
-        resume_from_log=args.resume_id is not None,
-        save_checkpoint_fn=save_checkpoint_fn,
     )
 
     pprint.pprint(result)
@@ -268,6 +280,5 @@ def test_dqn(args=get_args()):
     with open(reward_save_path, 'w') as f:
         json.dump(test_collector.policy_eval_results, f)
 
-
 if __name__ == "__main__":
-    test_dqn(get_args())
+    test_rainbow(get_args())

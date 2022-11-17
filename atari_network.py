@@ -144,7 +144,7 @@ class Rainbow(DQN):
         info: Dict[str, Any] = {},
     ) -> Tuple[torch.Tensor, Any]:
         r"""Mapping: x -> Z(x, \*)."""
-        obs, state = super().forward(obs)
+        obs, state, _ = super().forward(obs)
         q = self.Q(obs)
         q = q.view(-1, self.action_num, self.num_atoms)
         if self._is_dueling:

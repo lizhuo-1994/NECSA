@@ -72,7 +72,7 @@ class ScoreInspector:
                 self.max_state = np.array([self.state_max for i in range(self.raw_state_dim)])
 
         self.min_avg_proceed = 0
-        self.max_avg_proceed = 1000
+        self.max_avg_proceed = 1
 
         #self.scores = scores
         self.score_avg = 0
@@ -84,7 +84,6 @@ class ScoreInspector:
         self.grid = Grid(self.min_state, self.max_state, self.grid_num)   
 
     def save(self, env_name):
-
         with open(env_name + '.json', 'w') as f:
             json.dump(self.states_info, f)
 
@@ -126,7 +125,7 @@ class ScoreInspector:
 
         con_states = np.array(con_states)
 
-        if self.mode == 'state':
+        if self.mode == 'state' or self.mode == 'hidden':
             con_states = con_states[:,:self.state_dim]
         elif self.mode == 'state_action':
             con_states = con_states[:,:self.state_dim + self.action_dim]
@@ -189,8 +188,8 @@ class Abstracter:
         self.epsilon = epsilon
         self.inspector = None
 
-    def dim_reduction(self, state):
-        small_state = np.dot(state, self.inspector.project_matrix)
+    def dim_reduction(self, con_state):
+        small_state = np.dot(con_state, self.inspector.project_matrix)
         return  small_state
 
         
@@ -223,7 +222,7 @@ class Abstracter:
         if score != None:
             if  time > 0:
                 delta = (score - self.inspector.score_avg) * self.epsilon
-                #print(abs_pattern, score, self.inspector.score_avg, rewards[0], rewards[0] + delta)
+                # print(abs_pattern, score, self.inspector.score_avg, rewards[0], rewards[0] + delta)
                 rewards[0] += delta
                 
         return rewards[0]
