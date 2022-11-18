@@ -64,11 +64,11 @@ class Actor(nn.Module):
         info: Dict[str, Any] = {},
     ) -> Tuple[torch.Tensor, Any]:
         r"""Mapping: s -> Q(s, \*)."""
-        logits, hidden = self.preprocess(obs, state)
+        logits, hidden, feature = self.preprocess(obs, state)
         logits = self.last(logits)
         if self.softmax_output:
             logits = F.softmax(logits, dim=-1)
-        return logits, hidden
+        return logits, hidden, feature
 
 
 class Critic(nn.Module):
@@ -117,7 +117,7 @@ class Critic(nn.Module):
         self, obs: Union[np.ndarray, torch.Tensor], **kwargs: Any
     ) -> torch.Tensor:
         """Mapping: s -> V(s)."""
-        logits, _ = self.preprocess(obs, state=kwargs.get("state", None))
+        logits, _, _ = self.preprocess(obs, state=kwargs.get("state", None))
         return self.last(logits)
 
 

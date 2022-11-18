@@ -105,7 +105,7 @@ class PGPolicy(BasePolicy):
             Please refer to :meth:`~tianshou.policy.BasePolicy.forward` for
             more detailed explanation.
         """
-        logits, hidden = self.actor(batch.obs, state=state)
+        logits, hidden, _ = self.actor(batch.obs, state=state)
         if isinstance(logits, tuple):
             dist = self.dist_fn(*logits)
         else:
