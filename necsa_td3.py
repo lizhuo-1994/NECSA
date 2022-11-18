@@ -223,7 +223,7 @@ def test_td3(args=get_args()):
     if 'necsa' in args.algo_name:
         reward_save_path = reward_save_path + '_' + str(args.step)
     now = datetime.datetime.now().strftime("%y%m%d-%H%M%S")
-    os.makedirs(reward_save_path + '/' + now, exist_ok=True)
+    os.makedirs(reward_save_path, exist_ok=True)
     reward_save_path = reward_save_path + '/' + now + '.json'
     print(reward_save_path)
     with open(reward_save_path, 'w') as f:

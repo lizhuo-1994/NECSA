@@ -129,6 +129,7 @@ class Rainbow(DQN):
             linear(self.output_dim, 512), nn.ReLU(inplace=True),
             linear(512, self.action_num * self.num_atoms)
         )
+
         self._is_dueling = is_dueling
         if self._is_dueling:
             self.V = nn.Sequential(
@@ -144,7 +145,7 @@ class Rainbow(DQN):
         info: Dict[str, Any] = {},
     ) -> Tuple[torch.Tensor, Any]:
         r"""Mapping: x -> Z(x, \*)."""
-        obs, state, _ = super().forward(obs)
+        obs, state, feature = super().forward(obs)
         q = self.Q(obs)
         q = q.view(-1, self.action_num, self.num_atoms)
         if self._is_dueling:
@@ -154,7 +155,7 @@ class Rainbow(DQN):
         else:
             logits = q
         probs = logits.softmax(dim=2)
-        return probs, state
+        return probs, state,  feature
 
 
 class QRDQN(DQN):
