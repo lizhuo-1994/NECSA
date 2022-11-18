@@ -392,7 +392,10 @@ class NECSA_Atari_Collector(object):
                     if ep_idx[i] + ep_len[i] > u_bound:
                         update_len = u_bound - ep_idx[i]
                         self.buffer.rew[ep_idx[i]: u_bound + 1] = self.ep_reward[:update_len + 1]
-                        self.buffer.rew[l_bound: ptr[i] + 1] = self.ep_reward[update_len + 1:]
+                        if len(self.ep_reward[update_len + 1:]) == 0:
+                            pass
+                        else:
+                            self.buffer.rew[l_bound: ptr[i] + 1] = self.ep_reward[update_len + 1:]
                     else:
                         self.buffer.rew[ep_idx[i]: ep_idx[i] + ep_len[i]] = self.ep_reward
 
