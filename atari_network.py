@@ -35,12 +35,23 @@ class DQN(nn.Module):
             self.output_dim = np.prod(self.net(torch.zeros(1, c, h, w)).shape[1:])
 
 
+        
         self.feature_net = nn.Sequential(
                 self.net, 
                 nn.Linear(self.output_dim, 64),
                 nn.Sigmoid()
         )
-
+        '''
+        if not features_only:
+            self.feature_net = nn.Sequential(
+                self.net, nn.Linear(self.output_dim, 512), nn.ReLU(inplace=True)                
+            )
+            self.net = nn.Sequential(
+                self.feature_net, 
+                nn.Linear(512, np.prod(action_shape))
+            )
+            self.output_dim = np.prod(action_shape)
+        '''
         if not features_only:
             self.net = nn.Sequential(
                 self.net, nn.Linear(self.output_dim, 512), nn.ReLU(inplace=True),

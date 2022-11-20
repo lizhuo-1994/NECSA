@@ -80,9 +80,9 @@ def get_args():
 
 
     parser.add_argument("--step", type=int, default=1)                  # Directory for storing all experimental data
-    parser.add_argument("--grid_num", type=int, default=6)              # Directory for storing all experimental data
+    parser.add_argument("--grid_num", type=int, default=5)              # Directory for storing all experimental data
     parser.add_argument("--epsilon", type=float, default=0.1)            # Directory for storing all experimental data
-    parser.add_argument("--raw_state_dim", type=int, default=64 ) 
+    parser.add_argument("--raw_state_dim", type=int, default=64) 
     parser.add_argument("--state_dim", type=int, default=24) 
     parser.add_argument("--state_min", type=float, default=0 )        # 
     parser.add_argument("--state_max", type=float, default=1 )         # state_max, state_min
@@ -178,7 +178,7 @@ def test_dqn(args=get_args()):
 
     # log
     now = datetime.datetime.now().strftime("%y%m%d-%H%M%S")
-    args.algo_name = "dqn_icm" if args.icm_lr_scale > 0 else "dqn"
+    #args.algo_name = "dqn_icm" if args.icm_lr_scale > 0 else "dqn"
     log_name = os.path.join(args.task, args.algo_name, str(args.seed), now)
     log_path = os.path.join(args.logdir, log_name)
 

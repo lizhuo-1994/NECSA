@@ -56,7 +56,7 @@ class ScoreInspector:
                 self.min_state = np.dot(np.array([self.state_min for i in range(self.raw_state_dim)]+ [self.action_min for i in range(self.action_dim)]), self.project_matrix)
                 self.max_state = np.dot(np.array([self.state_max for i in range(self.raw_state_dim)]+ [self.action_max for i in range(self.action_dim)]), self.project_matrix)
             elif self.mode == 'hidden':
-                self.project_matrix = np.random.uniform(0,0.1,(self.raw_state_dim,self.state_dim))
+                self.project_matrix = np.random.uniform(-1,1,(self.raw_state_dim,self.state_dim))
                 self.min_state = np.dot(np.array([self.state_min for i in range(self.raw_state_dim)]), self.project_matrix)
                 self.max_state = np.dot(np.array([self.state_max for i in range(self.raw_state_dim)]), self.project_matrix)
 
@@ -144,6 +144,7 @@ class ScoreInspector:
         normal_scale = self.max_avg_proceed - self.min_avg_proceed
 
         proceed = sum(rewards)
+
         for i in range(len(abs_states)):
             if i + self.step >= len(abs_states):
                 break
@@ -210,9 +211,7 @@ class Abstracter:
         self.con_reward = []
         self.con_dones  = []
     
-    def handle_pattern(self,con_states,rewards):
-
-        abs_pattern = self.inspector.discretize_states(con_states)
+    def handle_pattern(self,abs_pattern,rewards):
         
         if len(abs_pattern) != self.step:
             return rewards[0]
@@ -234,14 +233,16 @@ class Abstracter:
         if self.inspector.reduction:
             state_list = self.dim_reduction(state_list)
         
+        abs_states = self.inspector.discretize_states(state_list)
+        
         shaping_reward_list = copy.deepcopy(reward_list)
 
-        for i in range(len(state_list) - self.step):
+        for i in range(len(abs_states) - self.step):
 
-            target_states = state_list[i:i+self.step]
+            target_patterns = abs_states[i:i+self.step]
             target_rewards = reward_list[i:i+self.step]
 
-            shaped_reward = self.handle_pattern(target_states, target_rewards)
+            shaped_reward = self.handle_pattern(target_patterns, target_rewards)
             shaping_reward_list[i] = shaped_reward
         
         shaping_reward_list = np.array(shaping_reward_list)
