@@ -365,6 +365,7 @@ class Collector(object):
                     (n_episode and episode_count >= n_episode):
                 break
 
+
         # generate statistics
         self.collect_step += step_count
         self.collect_episode += episode_count

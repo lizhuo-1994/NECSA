@@ -72,7 +72,7 @@ def get_args():
 
 
     parser.add_argument("--step", type=int, default=1)                  # Directory for storing all experimental data
-    parser.add_argument("--grid_num", type=int, default=6)              # Directory for storing all experimental data
+    parser.add_argument("--grid_num", type=int, default=5)              # Directory for storing all experimental data
     parser.add_argument("--epsilon", type=float, default=0.1)            # Directory for storing all experimental data
     parser.add_argument("--raw_state_dim", type=int, default=64 ) 
     parser.add_argument("--state_dim", type=int, default=24) 
@@ -149,8 +149,25 @@ def test_rainbow(args=get_args()):
             beta=args.beta,
             weight_norm=not args.no_weight_norm
         )
+
+    NECSA_DICT = {
+        'step' : args.step,
+        'grid_num' : args.grid_num,
+        'epsilon' : args.epsilon,
+        'mode' : args.mode,
+        'reduction' : args.reduction,
+        'raw_state_dim' : args.raw_state_dim,
+        'state_dim' : args.state_dim,
+        'state_min' : args.state_min,
+        'state_max' : args.state_max,
+        'action_dim' : None,
+        'action_min' : None,
+        'action_max' : None
+    }
+    print(NECSA_DICT)
+
     # collector
-    train_collector = NECSA_Atari_Collector(policy, train_envs, buffer, exploration_noise=True)
+    train_collector = NECSA_Atari_Collector(policy, train_envs, buffer, exploration_noise=True, NECSA_DICT = NECSA_DICT)
     test_collector = Collector(policy, test_envs, exploration_noise=True)
 
     args.algo_name = 'necsa_rainbow'
