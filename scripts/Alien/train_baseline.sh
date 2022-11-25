@@ -13,9 +13,9 @@ killall -9 python
 python rainbow.py --task AlienNoFrameskip-v4 --epoch 500
 killall -9 python
 
-python ppo.py --task AlienNoFrameskip-v4 --epoch 500
+python c51.py --task AlienNoFrameskip-v4 --epoch 500
 killall -9 python
-python ppo.py --task AlienNoFrameskip-v4 --epoch 500
+python c51.py --task AlienNoFrameskip-v4 --epoch 500
 killall -9 python
-python ppo.py --task AlienNoFrameskip-v4 --epoch 500
+python c51.py --task AlienNoFrameskip-v4 --epoch 500
 killall -9 python
