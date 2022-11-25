@@ -102,10 +102,10 @@ class C51(DQN):
         info: Dict[str, Any] = {},
     ) -> Tuple[torch.Tensor, Any]:
         r"""Mapping: x -> Z(x, \*)."""
-        obs, state = super().forward(obs)
+        obs, state, feature = super().forward(obs)
         obs = obs.view(-1, self.num_atoms).softmax(dim=-1)
         obs = obs.view(-1, self.action_num, self.num_atoms)
-        return obs, state
+        return obs, state, feature
 
 
 class Rainbow(DQN):
