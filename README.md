@@ -45,7 +45,7 @@
   }
   ```
 
-  * Our work NECSA is inspired by 2 state-of-the-art episodic control algorithms: [EMAC](https://github.com/schatty/EMAC), [EVA](https://github.com/AnnaNikitaRL/EVA) and [GEM](https://github.com/MouseHu/GEM). Please refer to the corresponding repo for details.
+  * Our work NECSA is also inspired by 3 state-of-the-art episodic control algorithms: [EMAC](https://github.com/schatty/EMAC), [EVA](https://github.com/AnnaNikitaRL/EVA) and [GEM](https://github.com/MouseHu/GEM). Please refer to the corresponding repo for details.
 
   ```
   @article{kuznetsov2021solving,
