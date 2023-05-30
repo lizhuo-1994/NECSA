@@ -15,7 +15,6 @@
   * bash ./Anaconda3-2020.11-Linux-x86_64.sh
   * (should be changed)echo 'export PATH="$pathToAnaconda/anaconda3/bin:$PATH"' >> ~/.bashrc
   * (optional) conda config --set auto_activate_base false
-  * conda env create -f env.yaml
   * conda create -n necsa python=3.8.5
   * conda activate necsa
   * pip3 install -r requirements.txt
