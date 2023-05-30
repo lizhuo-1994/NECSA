@@ -7,7 +7,7 @@
 
 ## 1 requirements
 
-  * refer to env.yaml
+  * refer to requirements.txt
 
 ## 2 Anaconda and Python
 
