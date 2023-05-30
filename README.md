@@ -9,16 +9,30 @@
 
   * refer to env.yaml
 
-## 2 Anaconda
+## 2 Anaconda and Python
 
   * wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
   * bash ./Anaconda3-2020.11-Linux-x86_64.sh
   * (should be changed)echo 'export PATH="$pathToAnaconda/anaconda3/bin:$PATH"' >> ~/.bashrc
   * (optional) conda config --set auto_activate_base false
   * conda env create -f env.yaml
+  * conda create -n necsa python=3.8.5
   * conda activate necsa
+  * pip3 install -r requirements.txt
 
-## 3 Execution:
+## 3 Install Atari and MuJoCo
+
+  * Atari:
+         Download the [ROM files](http://www.atarimania.com/rom_collection_archive_atari_2600_roms.html) for Atari, unzip and execute:
+         python -m atari_py.import_roms <path to folder> 
+  * MuJoCo:
+         (1) wget https://mujoco.org/download/mujoco210-linux-x86_64.tar.gz
+         (2) tar xvf mujoco210-linux-x86_64.tar.gz && mkdir -p ~/.mujoco && mv mujoco210 ~/.mujoco/mujoco210
+         (3) wget https://www.roboti.us/file/mjkey.txt -O  ~/.mujoco/mjkey.txt
+         (4) echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/.mujoco/mjpro210/bin:~/.mujoco/mujoco210/bin" >> ~/.bashrc
+         
+
+## 4 Execution:
   
   * Example:
          
@@ -28,11 +42,11 @@
          
          bash scripts/HalfCheetah-v3/train_NECSA_TD3.sh
 
-## 4 Experiment results:
+## 5 Experiment results:
 
   * Data will be automatically saved into ./results
 
-## 5 Citing and Thanks 
+## 6 Citing and Thanks 
 
   * Our program is highly depending on tianshou, thanks to the efforts by the developers. Please kindly cite the paper if you referenced our repo.
 
