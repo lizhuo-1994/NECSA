@@ -27,7 +27,7 @@
   * wget https://mujoco.org/download/mujoco210-linux-x86_64.tar.gz
   * tar xvf mujoco210-linux-x86_64.tar.gz && mkdir -p ~/.mujoco && mv mujoco210 ~/.mujoco/mujoco210
   * wget https://www.roboti.us/file/mjkey.txt -O  ~/.mujoco/mjkey.txt
-  * echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/.mujoco/mjpro210/bin:~/.mujoco/mujoco210/bin" >> ~/.bashrc
+  * echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/.mujoco/mujoco210/bin" >> ~/.bashrc
          
 
 ## 4 Execution:
