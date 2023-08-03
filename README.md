@@ -1,5 +1,5 @@
 # Neural Episodic Control with State Abstraction
-  * [NECSA](https://sites.google.com/view/drl-necsa) is based on [tianshou](https://tianshou.readthedocs.io/en/master/index.html) platform. Please refer the original repo for installation.
+  * [NECSA](https://openreview.net/pdf?id=C2fsSj3ZGiU) is based on [tianshou](https://tianshou.readthedocs.io/en/master/index.html) platform. Please refer the original repo for installation.
 
 ## 0 Introduction
 
